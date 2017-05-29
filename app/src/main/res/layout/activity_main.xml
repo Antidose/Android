@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="antidose.antidose.MainActivity">
+
+    <Button
+        android:id="@+id/button_help"
+        android:layout_width="182dp"
+        android:layout_height="101dp"
+        android:text="Help"
+        android:textSize="30sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="150dp"
+        app:layout_constraintHorizontal_bias="0.502" />
+
+    <Button
+        android:id="@+id/button_info"
+        android:layout_width="124dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="20dp"
+        android:text="Info"
+        app:layout_constraintTop_toBottomOf="@+id/button_login"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="124dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="20dp"
+        android:onClick="goNavigate"
+        android:text="Login"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_help" />
+</android.support.constraint.ConstraintLayout>

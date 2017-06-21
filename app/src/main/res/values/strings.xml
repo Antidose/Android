@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Antidose</string>
+    <string name="registration_activity_label">Registration</string>
 </resources>

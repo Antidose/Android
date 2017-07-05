@@ -1,7 +1,10 @@
 package antidose.antidose;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.JsonReader;
 import android.util.Log;
@@ -29,9 +32,11 @@ import timber.log.Timber;
 
 
 public class RegistrationActivity extends AppCompatActivity {
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     EditText editTextFirstName;
     EditText editTextLastName;
     EditText editTextPhoneNumber;
+    String lastChar = " ";
     public class User {
 
         String first_name;
@@ -52,10 +57,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
         @POST("register")
         Call<User> createUser(@Body User user);
+
+
     }
 
 
-    public static final String BASE_URL = "http://c76d1510.ngrok.io/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +70,36 @@ public class RegistrationActivity extends AppCompatActivity {
         editTextFirstName = (EditText) findViewById(R.id.editTextFirstName);
         editTextLastName = (EditText) findViewById(R.id.editTextLastName);
         editTextPhoneNumber = (EditText) findViewById(R.id.editTextPhoneNumber);
+        editTextPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                int digits = editTextPhoneNumber.getText().toString().length();
+                if (digits > 1)
+                    lastChar = editTextPhoneNumber.getText().toString().substring(digits-1);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int digits = editTextPhoneNumber.getText().toString().length();
+                Log.d("LENGTH",""+digits);
+                if (!lastChar.equals("-")) {
+                    if (digits == 3 || digits == 7) {
+                        editTextPhoneNumber.append("-");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public void register(View view) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(getResources().getText(R.string.server_url).toString())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -79,7 +109,6 @@ public class RegistrationActivity extends AppCompatActivity {
         String firstName = editTextFirstName.getText().toString().trim();
         String lastName = editTextLastName.getText().toString().trim();
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
 
         User user = new User(firstName, lastName, phoneNumber);
         Call<User> call = apiService.createUser(user);
@@ -96,36 +125,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 Log.d("D", t.toString());
             }
         });
-        /*
-        String formData = "username=<uname>&password=<pass>&grant_type=password";
-        String header = "Basic " + Base64. ("<client_id>:<client_secret>");
-        try {
-
-
-            //URL url = "";
-
-            HttpURLConnection connection
-                    = (HttpURLConnection) new URL(tokenUrl).openConnection();
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.addRequestProperty("Authorization", header);
-            connection.addRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("charset", "utf-8");
-            connection.setRequestProperty("Content-Length", Integer.toString(formData.length()));
-
-            OutputStream out = connection.getOutputStream();
-            out.write(formData.getBytes(StandardCharsets.UTF_8));
-
-            InputStream in = connection.getInputStream();
-            //JSONObject json = in.toString();
-            //AccessToken token = new ObjectMapper().readValue(in, AccessToken.class);
-            System.out.println(json);
-
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            System.err.println("Caught IOException: " + e.getMessage());
-        }*/
+        Intent intent = new Intent(this, VerificationActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, phoneNumber);
+        startActivity(intent);
     }
 }

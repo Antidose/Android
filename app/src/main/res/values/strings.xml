@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Antidose</string>
     <string name="registration_activity_label">Registration</string>
+    <string name="server_url">http://138.197.160.125:8088/</string>
 </resources>

@@ -10,8 +10,10 @@ import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -36,13 +38,14 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText editTextFirstName;
     EditText editTextLastName;
     EditText editTextPhoneNumber;
+    TextView textViewError;
     String lastChar = " ";
     public class User {
 
         String first_name;
         String last_name;
         String phone_number;
-        String current_status;
+        //String current_status;
 
         public User(String firstName, String lastName, String phoneNumber ) {
             this.first_name = firstName;
@@ -117,14 +120,25 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 Log.d("D", response.toString());
+                verification();
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.d("D", "User registration failed :(");
                 Log.d("D", t.toString());
+                textViewError = (TextView) findViewById(R.id.textViewError);
+                textViewError.setText(t.toString());
+                textViewError.setVisibility(View.VISIBLE);
             }
         });
+
+        //// TODO: 2017-07-06 fix callbacks and handle the proper responses
+        verification();
+    }
+
+    public void verification(){
+        String phoneNumber = editTextPhoneNumber.getText().toString().trim();
         Intent intent = new Intent(this, VerificationActivity.class);
         intent.putExtra(EXTRA_MESSAGE, phoneNumber);
         startActivity(intent);

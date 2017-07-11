@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,12 +19,13 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 import static antidose.antidose.R.id.editTextPhoneNumber;
+import static antidose.antidose.R.id.imgVerifySuccess;
 
 public class VerificationActivity extends AppCompatActivity {
     String phoneNumber;
 
     EditText editTextVerify;
-
+    ImageView imgVerifySuccess;
     String lastChar = "";
 
     public class UserVerify {
@@ -74,6 +76,7 @@ public class VerificationActivity extends AppCompatActivity {
                 }*/
                 if (editTextVerify.getText().toString().length() > 5){
                     register();
+                    editTextVerify.setEnabled(false);
                 }
             }
 
@@ -103,12 +106,17 @@ public class VerificationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserVerify> call, Response<UserVerify> response) {
                 Log.d("D", response.toString());
+                imgVerifySuccess = (ImageView) findViewById(R.id.imgVerifySuccess);
+                imgVerifySuccess.setVisibility(View.VISIBLE);
+
             }
 
             @Override
             public void onFailure(Call<UserVerify> call, Throwable t) {
                 Log.d("D", "User verification failed :(");
                 Log.d("D", t.toString());
+                editTextVerify.setText("");
+                editTextVerify.setEnabled(true);
             }
         });
     }

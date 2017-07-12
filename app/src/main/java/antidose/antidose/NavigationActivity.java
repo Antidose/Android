@@ -2,6 +2,9 @@ package antidose.antidose;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -75,6 +78,17 @@ public class NavigationActivity extends AppCompatActivity {
 
             }
         });*/
+
+        //header
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.information, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

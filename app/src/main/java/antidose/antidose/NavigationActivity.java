@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
@@ -134,6 +136,12 @@ OffRouteListener{
         //checkPermission()
         layerIds = new ArrayList<>();
         super.onCreate(savedInstanceState);
+
+        //header
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+
         navigation = new MapboxNavigation(this, "pk.eyJ1IjoiZmFicmljYXNpYW4iLCJhIjoiY2ozN3hsd3J1MDE3czJxcXB0bjA4YTJjaCJ9.1ngrjbfPAflOdbG79fEqQg");
         Mapbox.getInstance(this, "pk.eyJ1IjoiZmFicmljYXNpYW4iLCJhIjoiY2ozN3hsd3J1MDE3czJxcXB0bjA4YTJjaCJ9.1ngrjbfPAflOdbG79fEqQg");
         setContentView(R.layout.activity_navigation);
@@ -248,6 +256,7 @@ OffRouteListener{
             public void onFailure(Call<DirectionsResponse> call, Throwable t) {
                 Log.d("D",t.toString());
             }
+
         });
     }
 
@@ -276,6 +285,13 @@ OffRouteListener{
         } else {
             Timber.d("onRunning: Stopped");
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.information, menu);
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override

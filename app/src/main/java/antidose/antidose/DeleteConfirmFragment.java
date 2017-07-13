@@ -60,7 +60,7 @@ public class DeleteConfirmFragment extends DialogFragment {
                         mListener.onDialogPositiveClick(DeleteConfirmFragment.this);
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         // Send the negative button event back to the host activity

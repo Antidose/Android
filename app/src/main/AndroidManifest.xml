@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NavigationActivity" />
+        <activity android:name=".NavigationActivity" android:label="Navigation" />
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/registration_activity_label"

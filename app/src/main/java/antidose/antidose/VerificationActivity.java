@@ -1,11 +1,14 @@
 package antidose.antidose;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,6 +58,15 @@ public class VerificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
 
+        //header
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
 
         editTextVerify = (EditText) findViewById(R.id.editTextVerify);
         editTextVerify.addTextChangedListener(new TextWatcher() {
@@ -85,6 +97,13 @@ public class VerificationActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.information, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     public void register() {
@@ -119,5 +138,14 @@ public class VerificationActivity extends AppCompatActivity {
                 editTextVerify.setEnabled(true);
             }
         });
+
+    }
+
+    //temp should be on main page
+    public void goSetting(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
+
     }
 }

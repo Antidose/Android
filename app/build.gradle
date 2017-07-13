@@ -26,14 +26,22 @@ dependencies {
     })
 
     // Mapbox Navigation SDK for Android
-
-    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.0.2@aar') {
+    //compile 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.1.0-SNAPSHOT'
+    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.1.0@aar') {
         transitive = true
     }
 
+    compile 'com.jakewharton:butterknife:8.7.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+
+    compile 'android.arch.lifecycle:runtime:1.0.0-alpha3'
+    compile 'android.arch.lifecycle:extensions:1.0.0-alpha3'
+    compile 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.1.0-SNAPSHOT'
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.2.0'
+    compile 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.3.1'
+    //compile 'com.mapbox.mapboxsdk:mapbox-android-navigation-ui:0.4.0-SNAPSHOT'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:<latest-version>'
     testCompile 'junit:junit:4.12'

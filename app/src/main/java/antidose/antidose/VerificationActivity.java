@@ -1,5 +1,7 @@
 package antidose.antidose;
 
+import antidose.antidose.RestInterface.*;
+
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +20,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
-
-import static antidose.antidose.R.id.editTextPhoneNumber;
-import static antidose.antidose.R.id.imgVerifySuccess;
+import timber.log.Timber;
 
 public class VerificationActivity extends AppCompatActivity {
     String phoneNumber;
@@ -31,24 +29,7 @@ public class VerificationActivity extends AppCompatActivity {
     ImageView imgVerifySuccess;
     String lastChar = "";
 
-    public class UserVerify {
 
-        String token;
-        String phone_number;
-
-        public UserVerify(String phoneNumber, String token) {
-            this.phone_number = phoneNumber;
-            this.token = token;
-        }
-    }
-    public interface restInterface {
-        // Request method and URL specified in the annotation
-        // Callback for the parsed response is the last parameter
-
-
-        @POST("verify")
-        Call<UserVerify> verifyUser(@Body UserVerify user);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,21 +100,26 @@ public class VerificationActivity extends AppCompatActivity {
 
 
         UserVerify userVerify = new UserVerify(phoneNumber, verifyNumber);
-        Call<UserVerify> call = apiService.verifyUser(userVerify);
-        Log.d("D", userVerify.phone_number + " " + userVerify.token );
-        call.enqueue(new Callback<UserVerify>() {
-            @Override
-            public void onResponse(Call<UserVerify> call, Response<UserVerify> response) {
-                Log.d("D", response.toString());
-                imgVerifySuccess = (ImageView) findViewById(R.id.imgVerifySuccess);
-                imgVerifySuccess.setVisibility(View.VISIBLE);
+        Call<ApiToken> call = apiService.verifyUser(userVerify);
+        Timber.d(userVerify.phone_number + " " + userVerify.token );
 
+
+        call.enqueue(new Callback<ApiToken>() {
+            @Override
+            public void onResponse(Call<ApiToken> call, Response<ApiToken> response) {
+                if (response.isSuccessful()){
+                    Timber.d("Verification successful: " + response.toString());
+                    String apiToken = response.body().getApiToken();
+                    // Show success symbol
+                    imgVerifySuccess = (ImageView) findViewById(R.id.imgVerifySuccess);
+                    imgVerifySuccess.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
-            public void onFailure(Call<UserVerify> call, Throwable t) {
-                Log.d("D", "User verification failed :(");
-                Log.d("D", t.toString());
+            public void onFailure(Call<ApiToken> call, Throwable t) {
+
+                Timber.d("User verification failed: " + t.toString());
                 editTextVerify.setText("");
                 editTextVerify.setEnabled(true);
             }

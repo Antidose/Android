@@ -43,6 +43,7 @@ public class RegistrationActivity extends AppCompatActivity {
     EditText editTextPhoneNumber;
     TextView textViewError;
     String lastChar = " ";
+
     public class User {
 
         String first_name;
@@ -138,7 +139,7 @@ public class RegistrationActivity extends AppCompatActivity {
         Log.d("D", user.first_name + " " + user.last_name + " " + user.phone_number);
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<User> swag, Response<User> response) {
                 Log.d("D", response.toString());
                 verification();
             }

@@ -138,5 +138,14 @@ public class VerificationActivity extends AppCompatActivity {
                 editTextVerify.setEnabled(true);
             }
         });
+
+    }
+
+    //temp should be on main page
+    public void goSetting(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
+
     }
 }

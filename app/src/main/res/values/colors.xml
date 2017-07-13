@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="mapbox_navigation_route_layer_blue">#4882C6</color>
+    <color name="mapbox_navigation_route_layer_congestion_yellow">#FFAB65</color>
+    <color name="mapbox_navigation_route_layer_congestion_red">#E85552</color>
+    <color name="mapbox_navigation_route_shield_layer_color">#2C5F99</color>
     <color name="colorPrimary">#ff434c</color>
     <color name="colorPrimaryDark">#4c4c4d</color>
     <color name="colorAccent">#faf696</color>
     <color name="colorAccentOpacity">#C04c4c4d</color>
     <color name="antidoseRed">#ff434c</color>
     <color name="white">#ffffff</color>
+    <color name="colorSuccess">#adf47a</color>
+    <color name="transwhite">#ffffff</color>
 </resources>

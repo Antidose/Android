@@ -15,4 +15,12 @@ android:layout_height="match_parent">
     mapbox:mapbox_styleUrl="mapbox://styles/mapbox/light-v9"
     mapbox:mapbox_cameraZoom="11" />
 
+    <Button
+        android:id="@+id/startRouteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="32dp"
+        android:text="Start route"
+        android:visibility="invisible"/>
 </RelativeLayout>

@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void goNortify(View view) {
+    public void goNotify(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, NoritfyActivity.class);
+        Intent intent = new Intent(this, NotifyActivity.class);
         startActivity(intent);
 
     }

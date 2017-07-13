@@ -108,7 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="418dp"
-        android:onClick="goNortify"
+        android:onClick="goNotify"
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"

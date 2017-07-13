@@ -8,12 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-public class NoritfyActivity extends AppCompatActivity {
+public class NotifyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_noritfy);
+        setContentView(R.layout.activity_notify);
 
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);

@@ -100,7 +100,7 @@ import static com.mapbox.services.android.navigation.v5.NavigationConstants.NONE
 
 public class NavigationActivity extends AppCompatActivity implements OnMapReadyCallback,
         /*MapboxMap.OnMapClickListener,*/ ProgressChangeListener, NavigationEventListener, LocationEngineListener,
-OffRouteListener{
+        OffRouteListener{
 
     // Map variables
     @BindView(R.id.mapView)
@@ -264,7 +264,7 @@ OffRouteListener{
     }
 
     public void userOffRoute(Location location){
-        
+
     }
 
     //public void

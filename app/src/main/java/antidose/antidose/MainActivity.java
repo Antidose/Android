@@ -52,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void goNortify(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, NoritfyActivity.class);
+        startActivity(intent);
+
+    }
+
     public void register(View view) {
         Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);

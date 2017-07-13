@@ -10,4 +10,6 @@
     <color name="colorAccentOpacity">#C04c4c4d</color>
     <color name="antidoseRed">#ff434c</color>
     <color name="white">#ffffff</color>
+    <color name="colorSuccess">#adf47a</color>
+    <color name="transwhite">#ffffff</color>
 </resources>

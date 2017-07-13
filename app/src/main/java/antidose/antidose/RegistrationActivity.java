@@ -1,5 +1,7 @@
 package antidose.antidose;
 
+import antidose.antidose.RestInterface.*;
+
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -7,33 +9,24 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONObject;
-import org.w3c.dom.Text;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 import timber.log.Timber;
-
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -44,29 +37,7 @@ public class RegistrationActivity extends AppCompatActivity {
     TextView textViewError;
     String lastChar = " ";
 
-    public class User {
 
-        String first_name;
-        String last_name;
-        String phone_number;
-        //String current_status;
-
-        public User(String firstName, String lastName, String phoneNumber ) {
-            this.first_name = firstName;
-            this.last_name = lastName;
-            this.phone_number = phoneNumber;
-        }
-    }
-    public interface restInterface {
-        // Request method and URL specified in the annotation
-        // Callback for the parsed response is the last parameter
-
-
-        @POST("register")
-        Call<User> createUser(@Body User user);
-
-
-    }
 
 
     @Override
@@ -122,9 +93,13 @@ public class RegistrationActivity extends AppCompatActivity {
 
     public void register(View view) {
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getResources().getText(R.string.server_url).toString())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         restInterface apiService =
@@ -134,18 +109,23 @@ public class RegistrationActivity extends AppCompatActivity {
         String lastName = editTextLastName.getText().toString().trim();
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();
 
-        User user = new User(firstName, lastName, phoneNumber);
-        Call<User> call = apiService.createUser(user);
-        Log.d("D", user.first_name + " " + user.last_name + " " + user.phone_number);
-        call.enqueue(new Callback<User>() {
+        Call<ResponseBody> call = apiService.createUser(new User(firstName, lastName, phoneNumber));
+
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<User> swag, Response<User> response) {
-                Log.d("D", response.toString());
-                verification();
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()){
+                    try {
+                        Timber.d("Registration successful: " + response.body().string());
+                        verification();
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("D", "User registration failed :(");
                 Log.d("D", t.toString());
                 textViewError = (TextView) findViewById(R.id.textViewError);
@@ -153,9 +133,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 textViewError.setVisibility(View.VISIBLE);
             }
         });
-
-        //// TODO: 2017-07-06 fix callbacks and handle the proper responses
-        verification();
     }
 
     public void verification(){

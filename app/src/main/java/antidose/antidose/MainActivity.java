@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button
         Intent intent = new Intent(this, NavigationActivity.class);
         startActivity(intent);
-
     }
 
     public void goNotify(View view) {
@@ -57,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NotifyActivity.class);
         startActivity(intent);
 
+    }
+    public void callEMS(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, ContactEMSActivity.class);
+        startActivity(intent);
     }
 
     public void register(View view) {

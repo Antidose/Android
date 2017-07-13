@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NavigationActivity" android:label="Navigation" />
+        <activity
+            android:name=".NavigationActivity"
+            android:label="Navigation" />
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/registration_activity_label"
@@ -46,13 +48,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".NotifyActivity"
+        <activity
+            android:name=".NotifyActivity"
             android:label="@string/title_notify_settings"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />></activity>
         <activity android:name=".ContactEMSActivity"></activity>
+        <activity android:name=".HelpActivity" android:label="Finding Help"></activity>
     </application>
 
 </manifest>

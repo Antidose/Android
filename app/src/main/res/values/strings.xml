@@ -7,11 +7,16 @@
     <string name="aid_activity_label">First Aid Information</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_notify_settings">Help Needed</string>
-
+    <string name="title_help_message">Do not move from your location</string>
 
     <!-- Example settings for Notifications -->
     <string name="title_notify_message">There is an overdose emergency close by</string>
     <string name="title_notify_question">Can you head to the area immediately? (You will be provided directions)</string>
 
     <string name="delete_confirm">Permanently delete your account? This action is not reversible.</string>
+
+    <string name="cancel_search">Are you sure you want to cancel the search? No more responders will be alerted of your location.</string>
+
+    <string name="confirm_help">Are there enough responders on site to handle the situation?</string>
+    
 </resources>

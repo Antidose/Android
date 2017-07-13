@@ -44,6 +44,9 @@ public class NotifyActivity extends AppCompatActivity {
         //do stuff
         //get map
         //idk this is hard
+        Intent intent = new Intent(this, NavigationActivity.class);
+        startActivity(intent);
+
     }
 
     public void cannotGo(View view) {

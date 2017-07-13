@@ -12,18 +12,16 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
-        android:layout_width="380dp"
-        android:layout_height="53dp"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="0dp"
-        app:layout_constraintHorizontal_bias="0.555"
-        tools:layout_editor_absoluteX="0dp" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 
     <TextView
@@ -35,33 +33,31 @@
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="274dp"
+        android:layout_marginTop="86dp"
         app:layout_constraintRight_toLeftOf="@+id/imageButton"
         app:layout_constraintLeft_toRightOf="@+id/imageButton" />
 
     <ImageButton
         android:id="@+id/imageButton"
-        android:layout_width="240dp"
-        android:layout_height="273dp"
+        android:layout_width="226dp"
+        android:layout_height="241dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@null"
-        android:onClick="goNavigate"
+        android:cropToPadding="false"
+        android:onClick="goHelp"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/alert1" />
+        app:layout_constraintVertical_bias="0.445"
+        app:srcCompat="@drawable/alert1"
+        app:layout_constraintHorizontal_bias="0.497" />
 
     <Button
         android:id="@+id/button_login"
-        android:layout_width="385dp"
+        android:layout_width="0dp"
         android:layout_height="59dp"
         android:layout_marginTop="499dp"
         android:background="@color/colorAccent"
@@ -69,12 +65,11 @@
         android:onClick="register"
         android:text="Register to be a Responder"
         android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="0dp"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -86,8 +81,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="310dp"
-        app:layout_constraintHorizontal_bias="0.503" />
+        android:layout_marginTop="132dp"
+        app:layout_constraintHorizontal_bias="0.497" />
 
     <TextView
         android:id="@+id/textView3"

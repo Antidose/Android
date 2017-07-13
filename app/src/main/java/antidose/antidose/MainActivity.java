@@ -63,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goHelp(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, HelpActivity.class);
+        startActivity(intent);
+
+    }
+
     public void register(View view) {
         Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);

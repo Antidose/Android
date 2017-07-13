@@ -14,17 +14,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NavigationActivity" android:label="Navigation" />
+        <activity
+            android:name=".NavigationActivity"
+            android:label="Navigation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/registration_activity_label"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -33,6 +38,7 @@
         <activity
             android:name=".VerificationActivity"
             android:label="@string/verification_activity_label"
+            android:screenOrientation="portrait"
             android:parentActivityName=".RegistrationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -41,18 +47,27 @@
         <activity
             android:name=".SettingActivity"
             android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".NotifyActivity"
+        <activity
+            android:name=".NotifyActivity"
             android:label="@string/title_notify_settings"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />></activity>
-        <activity android:name=".ContactEMSActivity"></activity>
+                android:value=".MainActivity" />>
+        </activity>
+        <activity android:name=".ContactEMSActivity" android:screenOrientation="portrait">></activity>
+        
+        <activity
+            android:name=".HelpActivity"
+            android:label="Finding Help"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

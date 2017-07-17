@@ -102,14 +102,14 @@ public class RegistrationActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        restInterface apiService =
-                retrofit.create(restInterface.class);
+        RestInterface.restInterface apiService =
+                retrofit.create(RestInterface.restInterface.class);
 
         String firstName = editTextFirstName.getText().toString().trim();
         String lastName = editTextLastName.getText().toString().trim();
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();
 
-        Call<ResponseBody> call = apiService.createUser(new User(firstName, lastName, phoneNumber));
+        Call<ResponseBody> call = apiService.createUser(new RestInterface().new User(firstName, lastName, phoneNumber));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

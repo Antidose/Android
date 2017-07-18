@@ -105,13 +105,11 @@ public class RestInterface extends AppCompatActivity{
         String api_token;
         boolean hasKit;
         boolean isGoing;
-        int incidentID;
 
-        public Responder(String api_token, boolean hasKit, boolean isGoing, int incidentID) {
+        public Responder(String api_token, boolean hasKit, boolean isGoing) {
             this.api_token = api_token;
             this.hasKit = hasKit;
             this.isGoing = isGoing;
-            this.incidentID = incidentID;
         }
 
     }
@@ -119,14 +117,65 @@ public class RestInterface extends AppCompatActivity{
     class IncidentLocation{
 
         @Expose
-        private Location location;
+        private float latitude;
+        private float longitude;
 
-        public IncidentLocation(Location location) {
-            this.location = location;
+        public IncidentLocation(float lat, float lon) {
+            this.latitude = lat;
+            this.longitude = lon;
         }
 
-        public Location getLocation() {
-            return location;
+        public float getLatitude() {
+            return latitude;
+        }
+        public float getLongitude() {
+            return longitude;
+        }
+
+    }
+
+    class ResponderLocation{
+        String api_token;
+        Location location;
+
+        public ResponderLocation(String api_token, Location location) {
+            this.api_token = api_token;
+            this.location = location;
+        }
+    }
+
+    class NumberResponders{
+
+        @Expose
+        private int responders;
+
+        public NumberResponders(int coming) {
+            this.responders = coming;
+        }
+
+        public int getResponders() {
+            return this.responders;
+        }
+
+    }
+
+    class MapInformation{
+
+        @Expose
+        private float distance;
+        private float duration;
+
+        public MapInformation(float dist, float dur) {
+            this.distance = dist;
+            this.duration = dur;
+        }
+
+        public float getDistance() {
+            return distance;
+        }
+
+        public float getDuration() {
+            return duration;
         }
 
     }
@@ -158,6 +207,12 @@ public class RestInterface extends AppCompatActivity{
 
         @POST("respondIncident")
         Call<IncidentLocation> respondIncident(@Body Responder response);
+
+        @POST("numResponders")
+        Call<NumberResponders> numberResponders(@Body ApiToken token);
+
+        @POST("requestInfo")
+        Call<MapInformation> requestInfo(@Body ResponderLocation responder);
 
     }
 }

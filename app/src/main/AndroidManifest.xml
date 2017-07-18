@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
+   <!-- <uses-permission android:name="android.permission.SEND_SMS" />-->
 
     <application
         android:allowBackup="true"
@@ -62,12 +62,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />>
         </activity>
-        <activity android:name=".ContactEMSActivity" android:screenOrientation="portrait">></activity>
+        <activity android:name=".ContactEMSActivity" android:screenOrientation="portrait">>
+        </activity>
         
         <activity
             android:name=".HelpActivity"
             android:label="Finding Help"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
+
+        <service
+            android:name=".FirebaseMessagingIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

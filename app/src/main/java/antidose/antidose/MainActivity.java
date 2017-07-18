@@ -1,6 +1,7 @@
 package antidose.antidose;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +11,13 @@ import android.view.Menu;
 import android.view.View;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TOKEN_PREFS_NAME = "User_Token";
 
     AnimationDrawable alertAnimation;
     @Override
@@ -36,6 +40,17 @@ public class MainActivity extends AppCompatActivity {
         alertImage.setScaleType(ScaleType.FIT_CENTER);
         alertAnimation = (AnimationDrawable) alertImage.getDrawable();
         alertAnimation.start();
+
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
+        if(token!=null){
+            Button regButton = (Button) findViewById(R.id.button_login);
+            regButton.setVisibility(View.INVISIBLE);
+            Button settingButton = (Button) findViewById(R.id.button_settings);
+            settingButton.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -54,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
     public void goNotify(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, NotifyActivity.class);
+        startActivity(intent);
+
+    }
+
+    public void goSettings(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
 
     }

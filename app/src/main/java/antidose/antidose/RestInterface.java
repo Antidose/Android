@@ -1,5 +1,6 @@
 package antidose.antidose;
 
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 
 import okhttp3.ResponseBody;
@@ -78,6 +79,62 @@ public class RestInterface extends AppCompatActivity{
         }
     }
 
+    class Alert {
+
+        int IMEI;
+        Location location;
+
+        public Alert(int IMEI, Location location) {
+            this.IMEI = IMEI;
+            this.location = location;
+        }
+    }
+
+    class CancelSearch{
+
+        String api_token;
+        boolean isResolved;
+
+        public CancelSearch(String api_token, boolean isResolved) {
+            this.api_token = api_token;
+            this.isResolved = isResolved;
+        }
+
+    }
+
+    class Responder{
+
+        String api_token;
+        boolean hasKit;
+        boolean isGoing;
+        int incidentID;
+
+        public Responder(String api_token, boolean hasKit, boolean isGoing, int incidentID) {
+            this.api_token = api_token;
+            this.hasKit = hasKit;
+            this.isGoing = isGoing;
+            this.incidentID = incidentID;
+        }
+
+    }
+
+    class IncidentLocation{
+
+        @Expose
+        private Location location;
+
+        public IncidentLocation(Location location) {
+            this.location = location;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+
+    }
+
+
+
     interface restInterface {
         // Request method and URL specified in the annotation
         // Callback for the parsed response is the last parameter
@@ -94,6 +151,15 @@ public class RestInterface extends AppCompatActivity{
 
         @POST("deleteAccount")
         Call<ResponseBody> deleteAccount(@Body ApiToken token);
+
+        @POST("alert")
+        Call<ResponseBody> sendHelp(@Body Alert alert);
+
+        @POST("stopIncident")
+        Call<ResponseBody> cancelSearch(@Body CancelSearch cancel);
+
+        @POST("respondIncident")
+        Call<IncidentLocation> respondIncident(@Body Responder response);
 
     }
 }

@@ -120,6 +120,7 @@ public class VerificationActivity extends AppCompatActivity {
                 if (response.isSuccessful()){
                     Timber.d("Verification successful: " + response.toString());
                     String apiToken = response.body().getApiToken();
+
                     // Show success symbol
 
                     // We need an Editor object to make preference changes.

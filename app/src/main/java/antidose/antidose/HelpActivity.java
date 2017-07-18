@@ -42,18 +42,14 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         TextView resCount = (TextView) findViewById(R.id.textViewResponderCount);
         TextView OTW = (TextView) findViewById(R.id.textViewOTW);
 
-        SocketConnection socketConnection = new SocketConnection();
-        socketConnection.serverConnection(getResources().getText(R.string.server_url).toString()+"ws");
+        String url = getResources().getText(R.string.server_url).toString()+"ws";
+        SocketConnection socketConnection = new SocketConnection(url, "MYTOKEN");
 
-        //socketConnection.sendMessage("");
         updateRadius(radius);
         updateResCount(resCount);
         updateOTWCount(OTW);
 
     }
-
-
-
 
 
 

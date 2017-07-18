@@ -13,6 +13,11 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 import timber.log.Timber;
 
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+
 /**
  * Created by graeme on 2017-07-13.
  */
@@ -24,6 +29,13 @@ public class SocketConnection {
     private OkHttpClient client;
     private String serverUrl;
 
+    public SocketConnection(String url, String token) {
+        // String url = getResources().getText(R.string.server_url).toString()+"ws";
+        // Would be great to get the URL somehow but XML is dogshit so ¯\_(ツ)_/¯
+        this.clientInit(url);
+        this.connectSocket();
+        webSocket.send(token);
+    }
 
     public class SocketListener extends WebSocketListener {
 
@@ -36,12 +48,6 @@ public class SocketConnection {
                     .url(serverUrl)
                     .build();
             client.newWebSocket(request, this);
-        }
-
-        @Override public void onOpen(WebSocket webSocket, Response response) {
-            webSocket.send("handshake from android");
-            Timber.d("Response: " + response.body().toString());
-            webSocket.close(1000, "Goodbye, World!");
         }
 
         @Override public void onMessage(WebSocket webSocket, String text) {
@@ -67,20 +73,20 @@ public class SocketConnection {
 
     }
 
-    public void connect(SocketListener listener) {
-        Request request = new Request.Builder()
-                .url(serverUrl)
-                .build();
-        webSocket = client.newWebSocket(request, new SocketListener());
-    }
-
-    public void serverConnection(String url) {
+    public void clientInit(String url) {
         client = new OkHttpClient.Builder()
                 .readTimeout(3,  TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
                 .build();
 
         serverUrl = url;
+    }
+
+    public void connectSocket() {
+        Request request = new Request.Builder()
+                .url(serverUrl)
+                .build();
+        webSocket = client.newWebSocket(request, new SocketListener());
     }
 
     public void sendMessage(String message) {

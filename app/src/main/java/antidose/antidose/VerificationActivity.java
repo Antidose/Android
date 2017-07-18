@@ -33,6 +33,7 @@ public class VerificationActivity extends AppCompatActivity {
     ImageView imgVerifyFail;
     TextView  textVerifyFail;
     public static final String PREFS_NAME = "User_Token";
+    public static final String FIREBASE_ID = "Firebase_ID";
     String lastChar = "";
 
 
@@ -104,8 +105,11 @@ public class VerificationActivity extends AppCompatActivity {
 
         String verifyNumber = editTextVerify.getText().toString().trim();
 
+        // Get Firebase ID
+        SharedPreferences settings = getSharedPreferences(FIREBASE_ID, 0);
+        String firebaseId = settings.getString(FIREBASE_ID, "");
 
-        UserVerify userVerify = new RestInterface().new UserVerify(phoneNumber, verifyNumber);
+        UserVerify userVerify = new RestInterface().new UserVerify(phoneNumber, verifyNumber, firebaseId);
         Call<ApiToken> call = apiService.verifyUser(userVerify);
         Timber.d(userVerify.phone_number + " " + userVerify.token );
 

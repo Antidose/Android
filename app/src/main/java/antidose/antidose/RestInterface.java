@@ -38,10 +38,12 @@ public class RestInterface extends AppCompatActivity{
 
         String token;
         String phone_number;
+        String firebase_id;
 
-        public UserVerify(String phoneNumber, String token) {
+        public UserVerify(String phoneNumber, String token, String firebase_id) {
             this.phone_number = phoneNumber;
             this.token = token;
+            this.firebase_id = firebase_id;
         }
     }
 

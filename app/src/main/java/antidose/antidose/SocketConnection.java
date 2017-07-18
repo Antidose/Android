@@ -13,15 +13,6 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 import timber.log.Timber;
 
-import java.io.File;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-
-/**
- * Created by graeme on 2017-07-13.
- */
-
 public class SocketConnection {
 
     // Variables

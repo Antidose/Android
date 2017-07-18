@@ -1,30 +1,15 @@
 package antidose.antidose;
 
-import antidose.antidose.SocketConnection.*;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
-
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.WebSocketListener;
-import okhttp3.WebSocket;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocketListener;
-import okio.ByteString;
-import timber.log.Timber;
 
 public class HelpActivity extends AppCompatActivity implements cancelSearchFragment.CancelSearchListener, confirmHelpFragment.ConfirmHelpListener{
     Handler handler;

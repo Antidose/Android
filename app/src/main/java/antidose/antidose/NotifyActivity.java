@@ -3,6 +3,7 @@ package antidose.antidose;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+<<<<<<< HEAD
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,6 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
+=======
+import android.location.Location;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+>>>>>>> Skeleton hookup help, norify, call4help
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,6 +43,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+
 
 public class NotifyActivity extends AppCompatActivity implements LocationListener {
 
@@ -41,6 +54,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     public static final String TOKEN_PREFS_NAME = "User_Token";
     private WebSocketClient mWebSocketClient;
     String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,15 +122,16 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     public void canGo(View view) {
         String hasKit = view.getTag().toString();
-        if (hasKit == "true") {
-            makeAPICallRespond(true, true, token);
+        if (hasKit.equals("true")) {
+
+            makeAPICallRespond(true, true);
         } else {
-            makeAPICallRespond(false, true, token);
+            makeAPICallRespond(false, true);
         }
     }
 
     public void cannotGo(View view) {
-        makeAPICallRespond(false, false, token);
+        makeAPICallRespond(false, false);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
@@ -342,6 +357,54 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             }
         };
         mWebSocketClient.connect();
+    }
+
+    public void makeAPICallRespond(boolean hasKit, final boolean isGoing){
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getResources().getText(R.string.server_url).toString())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RestInterface.restInterface apiService =
+                retrofit.create(RestInterface.restInterface.class);
+
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
+        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, hasKit, isGoing, incidentID));
+
+        call.enqueue(new Callback<RestInterface.IncidentLocation>() {
+            @Override
+            public void onResponse(Call<RestInterface.IncidentLocation> call, Response<RestInterface.IncidentLocation> response) {
+                if (response.isSuccessful()) {
+                        Timber.d("Responding to incident successful: ");
+                        if (!isGoing) {
+                            //person clicked 'no im not going'
+                            //return to caller, caller redirects to main
+                            return;
+                        }
+
+                        Location incidentLocation = response.body().getLocation();
+
+                        Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
+                        intent.putExtra("incident-location", incidentLocation);
+                        startActivity(intent);
+
+                    }
+                }
+
+            @Override
+            public void onFailure(Call<RestInterface.IncidentLocation> call, Throwable t) {
+                Log.d("D", "User registration failed :(");
+                Log.d("D", t.toString());
+            }
+        });
+
     }
 }
 

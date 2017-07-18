@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.content.SharedPreferences;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,10 +45,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
+
 public class HelpActivity extends AppCompatActivity implements cancelSearchFragment.CancelSearchListener, confirmHelpFragment.ConfirmHelpListener{
 
     public static final String TOKEN_PREFS_NAME = "User_Token";
     private WebSocketClient mWebSocketClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +203,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     }
 
     public void makeAPICancel(boolean isResolved){
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();

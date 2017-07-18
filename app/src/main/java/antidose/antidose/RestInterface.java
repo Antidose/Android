@@ -98,6 +98,7 @@ public class RestInterface extends AppCompatActivity{
         public CancelSearch(String IMEI, boolean isResolved) {
             this.IMEI = IMEI;
             this.is_resolved = isResolved;
+
         }
 
     }
@@ -112,13 +113,13 @@ public class RestInterface extends AppCompatActivity{
             this.api_token = api_token;
             this.has_kit = hasKit;
             this.is_going = isGoing;
+
         }
 
     }
 
     class IncidentLocation{
 
-        @Expose
         private float latitude;
         private float longitude;
 
@@ -178,6 +179,7 @@ public class RestInterface extends AppCompatActivity{
 
         public float getDuration() {
             return duration;
+
         }
 
     }

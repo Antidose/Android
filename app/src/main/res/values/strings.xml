@@ -10,7 +10,7 @@
     <string name="title_help_message">Do not move from your location</string>
 
     <!-- Example settings for Notifications -->
-    <string name="title_notify_message">There is an overdose emergency close by</string>
+    <string name="title_notify_message">Nearby Overdose</string>
     <string name="title_notify_question">Can you head to the area immediately? (You will be provided directions)</string>
 
     <string name="delete_confirm">Permanently delete your account? This action is not reversible.</string>

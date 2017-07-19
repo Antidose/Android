@@ -1,31 +1,26 @@
 package antidose.antidose;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 import java.util.Calendar;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,17 +38,14 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notify);
 
+        updateFonts();
+
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        // Get a support ActionBar corresponding to this toolbar
-        ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
 
 
-        TextView numComing = (TextView) findViewById(R.id.textViewComing);
+        Button numComing = (Button) findViewById(R.id.buttonGoing);
 
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
         token = settings.getString("Token", null);
@@ -91,10 +83,19 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     public void getInfoHandler(String token, Location location){
         //middle function just to grab the views after the location is figured out
-        TextView distance = (TextView) findViewById(R.id.textViewDistance);
-        TextView time = (TextView) findViewById(R.id.textViewTime);
+        Button distance = (Button) findViewById(R.id.buttonDistance);
+        Button time = (Button) findViewById(R.id.buttonTime);
         makeAPICallMapInfo(distance, time, token, location);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.information, menu);
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+
 
     public void canGo(View view) {
         String hasKit = view.getTag().toString();
@@ -109,6 +110,41 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         makeAPICallRespond(false, false, token);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    //on startup to change all fonts
+    public void updateFonts(){
+        TextView tx = (TextView)findViewById(R.id.textViewQuestion);
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/gravitylight.otf");
+        Typeface custom_font_regular = Typeface.createFromAsset(getAssets(), "font/gravityregular.otf");
+
+        tx.setTypeface(custom_font);
+
+        TextView tx2 = (TextView)findViewById(R.id.textView30);
+
+        tx2.setTypeface(custom_font);
+
+        TextView tx3 = (TextView)findViewById(R.id.textView31);
+
+        tx3.setTypeface(custom_font);
+
+        TextView tx4 = (TextView)findViewById(R.id.textView32);
+
+        tx4.setTypeface(custom_font);
+
+        TextView tx5 = (TextView)findViewById(R.id.textViewTitle);
+
+        tx5.setTypeface(custom_font_regular);
+
+        Button b1 = (Button)findViewById(R.id.buttonYesKit);
+        b1.setTypeface(custom_font);
+
+        Button b2 = (Button)findViewById(R.id.buttonYesNoKit);
+        b2.setTypeface(custom_font);
+
+        Button b3 = (Button)findViewById(R.id.buttonNo);
+        b3.setTypeface(custom_font);
     }
 
 

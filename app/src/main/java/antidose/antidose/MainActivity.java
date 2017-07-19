@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
@@ -49,26 +51,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-<<<<<<< HEAD
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-=======
+        
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
                 ) {
->>>>>>> idk
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.READ_PHONE_STATE}, 1);
         }
 
-<<<<<<< HEAD
-        
-=======
->>>>>>> idk
+        updateFonts();
+
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -135,6 +130,26 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onProviderDisabled(String arg0) {}
     public void onProviderEnabled(String arg0) {}
     public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
+
+
+    public void updateFonts(){
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/gravitylight.otf");
+        Typeface custom_font_regular = Typeface.createFromAsset(getAssets(), "font/gravityregular.otf");
+
+        TextView tx = (TextView)findViewById(R.id.textView);
+        tx.setTypeface(custom_font_regular);
+        TextView tx1 = (TextView)findViewById(R.id.textView2);
+        tx1.setTypeface(custom_font);
+        TextView tx2 = (TextView)findViewById(R.id.textView3);
+        tx2.setTypeface(custom_font);
+
+        Button b1 = (Button)findViewById(R.id.button_login);
+        b1.setTypeface(custom_font);
+        Button b2 = (Button)findViewById(R.id.button_settings);
+        b2.setTypeface(custom_font);
+
+    }
 
     public void goNavigate(View view) {
         // Do something in response to button

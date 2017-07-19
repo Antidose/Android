@@ -79,10 +79,10 @@ public class RestInterface extends AppCompatActivity{
 
     class Alert {
 
-        int IMEI;
+        String IMEI;
         Location location;
 
-        public Alert(int IMEI, Location location) {
+        public Alert(String IMEI, Location location) {
             this.IMEI = IMEI;
             this.location = location;
         }
@@ -90,10 +90,10 @@ public class RestInterface extends AppCompatActivity{
 
     class CancelSearch{
 
-        int IMEI;
+        String IMEI;
         boolean is_resolved;
 
-        public CancelSearch(int IMEI, boolean isResolved) {
+        public CancelSearch(String IMEI, boolean isResolved) {
             this.IMEI = IMEI;
             this.is_resolved = isResolved;
         }
@@ -133,7 +133,7 @@ public class RestInterface extends AppCompatActivity{
         }
 
     }
-    
+
     class ResponderLocation{
         String api_token;
         Location location;

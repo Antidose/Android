@@ -39,7 +39,7 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     LocationManager mLocationManager;
-    static int IMEI;
+    static String IMEI;
 
     public static final String TOKEN_PREFS_NAME = "User_Token";
 
@@ -50,11 +50,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
+                ) {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_PHONE_STATE}, 1);
         }
+
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -91,31 +96,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         loadButton.setVisibility(View.VISIBLE);
 
         //get users imei to make the request
-        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String sIMEI = mngr.getDeviceId();
-        IMEI = Integer.parseInt(sIMEI);
 
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String IMEI = mngr.getDeviceId();
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
             // Last location in phone was 2 minutes ago
             // Do something with the recent location fix
             //  otherwise wait for the update below
             makeAPICall(IMEI, location);
         } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
         }
     }
@@ -158,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         startActivity(intent);
     }
 
-    public void makeAPICall(int IMEI, Location location){
+    public void makeAPICall(String IMEI, Location location){
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -178,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()){
                     try {
-                        Timber.d("Registration successful: " + response.body().string());
+                        Timber.d("Alert request successful: " + response.body().string());
                         Intent intent = new Intent(MainActivity.this, HelpActivity.class);
 
                         //intent.putIntExtra("INCIDENT_ID", incidentId);
@@ -196,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("D", "User registration failed :(");
+                Log.d("D", "Alert Request failed :(");
                 Log.d("D", t.toString());
             }
         });

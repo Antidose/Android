@@ -5,8 +5,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-   <!-- <uses-permission android:name="android.permission.SEND_SMS" />-->
+    <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />-->
 
+    <!-- <uses-permission android:name="android.permission.SEND_SMS" /> -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,8 +15,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
-                  android:screenOrientation="portrait">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,12 +27,12 @@
         <activity
             android:name=".NavigationActivity"
             android:label="Navigation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/registration_activity_label"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -38,8 +40,8 @@
         <activity
             android:name=".VerificationActivity"
             android:label="@string/verification_activity_label"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".RegistrationActivity">
+            android:parentActivityName=".RegistrationActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".RegistrationActivity" />
@@ -47,8 +49,8 @@
         <activity
             android:name=".SettingActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -56,27 +58,43 @@
         <activity
             android:name=".NotifyActivity"
             android:label="@string/title_notify_settings"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />>
+                android:value=".MainActivity" />
+            >
         </activity>
-        <activity android:name=".ContactEMSActivity" android:screenOrientation="portrait">>
+        <activity
+            android:name=".ContactEMSActivity"
+            android:screenOrientation="portrait">
+            >
         </activity>
-        
         <activity
             android:name=".HelpActivity"
             android:label="Finding Help"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
-        <service
-            android:name=".FirebaseMessagingIDService">
+        <service android:name=".FirebaseMessagingIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".AntidoseNotifications">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
+<!--        <receiver
+            android:name=".BootCompletedIntentReceiver" android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>-->
     </application>
 
 </manifest>

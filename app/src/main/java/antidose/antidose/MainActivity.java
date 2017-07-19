@@ -201,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                         //intent.putIntExtra("INCIDENT_ID", incidentId);
                         //on the other end int s = getIntent().getIntExtra("EXTRA_SESSION_ID");
+                        Button loadButton = (Button) findViewById(R.id.buttonLoading);
+                        loadButton.setVisibility(View.INVISIBLE);
                         startActivity(intent);
                         //this response will come back with a user list and an incident ID which need to go somewhere
                         //list needs to go to the piush notification meme

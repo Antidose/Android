@@ -2,6 +2,7 @@ package antidose.antidose;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -33,13 +35,15 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
 
+        updateFonts();
+
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        TextView radius = (TextView) findViewById(R.id.textViewDistance);
-        TextView resCount = (TextView) findViewById(R.id.textViewResponderCount);
-        TextView OTW = (TextView) findViewById(R.id.textViewOTW);
+        Button radius = (Button) findViewById(R.id.buttonRadius);
+        Button resCount = (Button) findViewById(R.id.buttonResponderCount);
+        Button OTW = (Button) findViewById(R.id.buttonComing);
 
         updateRadius(radius);
         updateResCount(resCount);
@@ -140,6 +144,34 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         getMenuInflater().inflate(R.menu.information, menu);
         return super.onCreateOptionsMenu(menu);
 
+    }
+
+    //on startup to change all fonts
+    public void updateFonts(){
+        TextView tx = (TextView)findViewById(R.id.textView7);
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/gravitylight.otf");
+        Typeface custom_font_regular = Typeface.createFromAsset(getAssets(), "font/gravityregular.otf");
+
+        tx.setTypeface(custom_font_regular);
+
+        TextView tx2 = (TextView)findViewById(R.id.textView30);
+        tx2.setTypeface(custom_font);
+
+        TextView tx3 = (TextView)findViewById(R.id.textView31);
+        tx3.setTypeface(custom_font);
+
+        TextView tx4 = (TextView)findViewById(R.id.textView32);
+        tx4.setTypeface(custom_font);
+
+        Button b1 = (Button)findViewById(R.id.buttonTips);
+        b1.setTypeface(custom_font);
+
+        Button b2 = (Button)findViewById(R.id.buttonHelpArrived);
+        b2.setTypeface(custom_font);
+
+        Button b3 = (Button)findViewById(R.id.buttonCancel);
+        b3.setTypeface(custom_font);
     }
 
     public void makeAPICancel(boolean isResolved){

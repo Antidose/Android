@@ -3,25 +3,17 @@ package antidose.antidose;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-<<<<<<< HEAD
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
-=======
-import android.location.Location;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
->>>>>>> Skeleton hookup help, norify, call4help
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -66,8 +58,6 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
-
         Button numComing = (Button) findViewById(R.id.buttonGoing);
 
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);

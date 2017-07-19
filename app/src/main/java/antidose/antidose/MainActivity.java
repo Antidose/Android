@@ -39,7 +39,7 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
     LocationManager mLocationManager;
-    int IMEI;
+    static int IMEI;
 
     public static final String TOKEN_PREFS_NAME = "User_Token";
 

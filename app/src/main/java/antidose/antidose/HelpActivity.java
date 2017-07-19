@@ -143,9 +143,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     }
 
     public void makeAPICancel(boolean isResolved){
-        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
-        String token = settings.getString("Token", null);
-
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -158,7 +155,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
 
-        Call<ResponseBody> call = apiService.cancelSearch(new RestInterface().new CancelSearch(token, isResolved));
+        Call<ResponseBody> call = apiService.cancelSearch(new RestInterface().new CancelSearch(MainActivity.IMEI, isResolved));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

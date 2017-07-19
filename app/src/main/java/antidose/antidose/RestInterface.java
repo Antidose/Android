@@ -90,12 +90,12 @@ public class RestInterface extends AppCompatActivity{
 
     class CancelSearch{
 
-        String api_token;
-        boolean isResolved;
+        int IMEI;
+        boolean is_resolved;
 
-        public CancelSearch(String api_token, boolean isResolved) {
-            this.api_token = api_token;
-            this.isResolved = isResolved;
+        public CancelSearch(int IMEI, boolean isResolved) {
+            this.IMEI = IMEI;
+            this.is_resolved = isResolved;
         }
 
     }
@@ -103,13 +103,13 @@ public class RestInterface extends AppCompatActivity{
     class Responder{
 
         String api_token;
-        boolean hasKit;
-        boolean isGoing;
+        boolean has_kit;
+        boolean is_going;
 
         public Responder(String api_token, boolean hasKit, boolean isGoing) {
             this.api_token = api_token;
-            this.hasKit = hasKit;
-            this.isGoing = isGoing;
+            this.has_kit = hasKit;
+            this.is_going = isGoing;
         }
 
     }
@@ -133,7 +133,7 @@ public class RestInterface extends AppCompatActivity{
         }
 
     }
-
+    
     class ResponderLocation{
         String api_token;
         Location location;

@@ -4,6 +4,7 @@ import antidose.antidose.RestInterface.*;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,6 +46,8 @@ public class VerificationActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
+
+        updateFonts();
 
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -159,6 +163,21 @@ public class VerificationActivity extends AppCompatActivity {
         });
 
     }
+    public void updateFonts(){
+
+        Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/gravitylight.otf");
+
+        TextView tx = (TextView)findViewById(R.id.textView5);
+        tx.setTypeface(custom_font);
+
+        EditText ex1 = (EditText)findViewById(R.id.editTextVerify);
+        ex1.setTypeface(custom_font);
+
+        Button b1 = (Button)findViewById(R.id.button);
+        b1.setTypeface(custom_font);
+
+    }
+
 
     //temp should be on main page
     public void goSetting(View view) {

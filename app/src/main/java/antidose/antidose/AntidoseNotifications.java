@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -72,7 +73,13 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
             end.setLatitude(lat);
             end.setLongitude(lon);
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+            LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+            Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            createNotification(location, max, incidentId);
+
+            /*mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener((Executor) this, new OnSuccessListener<Location>() {
                         @Override
@@ -82,7 +89,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
                                 createNotification(location, max, incidentId);
                             }
                         }
-                    });
+                    });*/
 
         } else if(notification.equals("dismiss")){
             try{
@@ -106,13 +113,12 @@ public class AntidoseNotifications extends FirebaseMessagingService {
         }
 
         Intent resultIntent = new Intent(this, NotifyActivity.class);
-        resultIntent.putExtra("DISTANCE", distance);
         resultIntent.putExtra("BEARING", bearing);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Someone is experiencing an overdose " + distance + "km away")
+                        .setContentTitle("Someone is experiencing an overdose " + distance + "m away")
                         .setContentText("Click to respond");
 
         PendingIntent resultPendingIntent =

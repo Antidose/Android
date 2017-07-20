@@ -1,19 +1,32 @@
 package antidose.antidose;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Map;
+import java.util.concurrent.Executor;
 
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
@@ -24,55 +37,95 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class AntidoseNotifications extends FirebaseMessagingService {
+    Location end = new Location("");
+    int max,incidentId = 0;
+    String notification = "";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
-        // ...
+        max = 0;
+        incidentId = 0;
+        Float lat, lon;
+
+        // Create jsonobject
+        Map<String, String> params = remoteMessage.getData();
+        JSONObject jsonObject = new JSONObject(params);
+
+        // Determine if it is a dismissal message
         try {
-            OkHttpClient client = new OkHttpClient();
+            notification = jsonObject.getString("notification");
+        }catch(JSONException e){
+            return;
+        }
 
-            Request request = new Request.Builder()
-                    .url("https://antidose-go.herokuapp.com/")
-                    .build();
-
-            Response response = client.newCall(request).execute();
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-            Headers responseHeaders = response.headers();
-            for (int i = 0; i < responseHeaders.size(); i++) {
-                System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+        if (notification.equals("help")) {
+            try{
+                lat = Float.parseFloat(jsonObject.getString("lat"));
+                lon = Float.parseFloat(jsonObject.getString("lon"));
+                max = jsonObject.getInt("max");
+                incidentId = jsonObject.getInt("incident_id");
+            }catch(JSONException e){
+                return;
             }
 
-            System.out.println(response.body().string());
-        }catch(IOException e){
+            end.setLatitude(lat);
+            end.setLongitude(lon);
 
-        }
+            LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+            Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            createNotification(location, max, incidentId);
 
-        Handler h = new Handler(Looper.getMainLooper());
-        h.post(new Runnable() {
-            public void run() {
-                Context context = getApplicationContext();
-                Toast.makeText(context, "Your message to main thread", Toast.LENGTH_SHORT).show();
+        } else if(notification.equals("dismiss")){
+            try{
+                incidentId = jsonObject.getInt("incident_id");
+            }catch (JSONException e) {
+
             }
-        });
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.cancel(incidentId);
+        }
+    }
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Timber.d("From: " + remoteMessage.getFrom());
+    public void createNotification(Location location, int max, int incidentId){
+        Float bearing = location.bearingTo(end);
+        Float distance = location.distanceTo(end);
 
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Timber.d("Message data payload: " + remoteMessage.getData());
+        if (distance > max){
+            // /location endpoint update location
+            return;
         }
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Timber.d("Message Notification Body: " + remoteMessage.getNotification().getBody());
-        }
+        Intent resultIntent = new Intent(this, NotifyActivity.class);
+        resultIntent.putExtra("BEARING", bearing);
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Someone is experiencing an overdose " + distance + "m away")
+                        .setContentText("Click to respond");
+
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+
+
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Sets an ID for the notification
+        int mNotificationId = incidentId;
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 }

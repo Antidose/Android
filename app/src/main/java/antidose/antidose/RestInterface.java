@@ -218,5 +218,8 @@ public class RestInterface extends AppCompatActivity{
         @POST("requestInfo")
         Call<MapInformation> requestInfo(@Body ResponderLocation responder);
 
+        @POST("location")
+        Call<ResponseBody> sendLocationUpdate(@Body ResponderLocation responder);
+
     }
 }

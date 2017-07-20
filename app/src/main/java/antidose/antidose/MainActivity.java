@@ -51,6 +51,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
+        if (token != null) {
+            Button regButton = (Button) findViewById(R.id.button_login);
+            regButton.setVisibility(View.INVISIBLE);
+            Button settingButton = (Button) findViewById(R.id.button_settings);
+            settingButton.setVisibility(View.VISIBLE);
+            //service should only run when the user is registered
+            Intent intent = new Intent(this, PollingService.class);
+            startService(intent);
+        }
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
@@ -73,15 +88,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         alertAnimation = (AnimationDrawable) alertImage.getDrawable();
         alertAnimation.start();
 
-        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
-        String token = settings.getString("Token", null);
 
-        if (token != null) {
-            Button regButton = (Button) findViewById(R.id.button_login);
-            regButton.setVisibility(View.INVISIBLE);
-            Button settingButton = (Button) findViewById(R.id.button_settings);
-            settingButton.setVisibility(View.VISIBLE);
-        }
 
     }
 

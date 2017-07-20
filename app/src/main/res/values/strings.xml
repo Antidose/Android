@@ -3,6 +3,7 @@
     <string name="registration_activity_label">Registration</string>
     <string name="verification_activity_label">Verification</string>
     <string name="server_url">https://antidose-go.herokuapp.com/</string>
+    <string name="short_server_url">antidose-go.herokuapp.com</string>
     <string name="info_activity_label">App Information</string>
     <string name="aid_activity_label">First Aid Information</string>
     <string name="title_activity_settings">Settings</string>

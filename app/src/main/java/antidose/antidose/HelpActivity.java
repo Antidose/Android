@@ -1,6 +1,8 @@
 package antidose.antidose;
 
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.v4.app.DialogFragment;
@@ -12,9 +14,22 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.lang.Thread;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
 
@@ -29,6 +44,7 @@ import timber.log.Timber;
 public class HelpActivity extends AppCompatActivity implements cancelSearchFragment.CancelSearchListener, confirmHelpFragment.ConfirmHelpListener{
 
     public static final String TOKEN_PREFS_NAME = "User_Token";
+    private WebSocketClient mWebSocketClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +52,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         setContentView(R.layout.activity_help);
 
         updateFonts();
+        connectWebSocket();
 
-        //header
+    //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -47,7 +64,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         updateRadius(radius);
         updateResCount(resCount);
-        updateOTWCount(OTW);
+        updateOTWCount(OTW, "00");
 
     }
 
@@ -67,11 +84,12 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
     }
 
-    public void updateOTWCount(TextView text) {
+    public void updateOTWCount(TextView text, String s){
 
         // TODO: 2017-07-13 get number of responders on the way from server
-        String OTW = "00";
-        text.setText(OTW);
+
+
+        text.setText(s);
 
     }
 
@@ -203,4 +221,48 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         });
     }
 
+    private void connectWebSocket() {
+        URI uri;
+        try {
+            uri = new URI("ws://antidose-go.herokuapp.com/ws");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        mWebSocketClient = new WebSocketClient(uri) {
+            @Override
+            public void onOpen(ServerHandshake serverHandshake) {
+                Log.i("Websocket", "Opened");
+                mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
+            }
+
+            @Override
+            public void onMessage(String s) {
+                final String message = s;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //System.out.print(message);
+                        //TextView textView = (TextView)findViewById(R.id.messages);
+                        //textView.setText(textView.getText() + "\n" + message);
+                        Button OTW = (Button) findViewById(R.id.buttonComing);
+                        updateOTWCount(OTW, message);
+                    }
+                });
+            }
+
+            @Override
+            public void onClose(int i, String s, boolean b) {
+                Log.i("Websocket", "Closed " + s);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.i("Websocket", "Error " + e.getMessage());
+            }
+        };
+        mWebSocketClient.connect();
+    }
 }
+

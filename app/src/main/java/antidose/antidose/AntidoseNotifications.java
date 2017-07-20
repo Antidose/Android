@@ -92,7 +92,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
         Float bearing = location.bearingTo(end);
         Float distance = location.distanceTo(end);
 
-        if (distance < max){
+        if (distance > max){
             // /location endpoint update location
             return;
         }

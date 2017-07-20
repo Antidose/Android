@@ -112,8 +112,8 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     public void canGo(View view) {
         String hasKit = view.getTag().toString();
         if (hasKit.equals("true")) {
+            makeAPICallRespond(true, true, token);
 
-            makeAPICallRespond(true, true);
         } else {
             makeAPICallRespond(false, true);
         }
@@ -257,7 +257,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 retrofit.create(RestInterface.restInterface.class);
 
 
-        Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderLocation(token, location));
+        Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderLatLong(token, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<RestInterface.MapInformation>() {
             @Override

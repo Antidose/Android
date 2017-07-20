@@ -127,8 +127,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public void onDialogPositiveClickCancel(DialogFragment dialog) {
         // User touched the dialog's positive button
         makeAPICancel(false);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -153,8 +151,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         // User touched the dialog's positive button
         //return to main activity
         makeAPICancel(true);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -220,8 +216,10 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String IMEI = mngr.getDeviceId();
 
-        Call<ResponseBody> call = apiService.cancelSearch(new RestInterface().new CancelSearch(MainActivity.IMEI, isResolved));
+        Call<ResponseBody> call = apiService.cancelSearch(new RestInterface().new CancelSearch(IMEI, isResolved));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -229,6 +227,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 if (response.isSuccessful()){
                     try {
                         Timber.d("Incident Complete successful: " + response.body().string());
+
+                        Intent intent = new Intent(HelpActivity.this, MainActivity.class);
+                        startActivity(intent);
                         return;
 
                     }catch (IOException e) {

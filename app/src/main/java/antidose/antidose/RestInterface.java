@@ -237,7 +237,7 @@ public class RestInterface extends AppCompatActivity{
         Call<NumberResponders> numberResponders(@Body ApiToken token);
 
         @POST("requestInfo")
-        Call<MapInformation> requestInfo(@Body ResponderLocation responder);
+        Call<MapInformation> requestInfo(@Body ResponderLatLong responder);
 
         @POST("location")
         Call<ResponseBody> sendLocationUpdate(@Body ResponderLatLong responder);

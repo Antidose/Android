@@ -54,7 +54,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public void updateRadius(TextView text) {
 
         //// TODO: 2017-07-13 get search radius from server
-        String radius = "000";
+        String radius = "00";
         text.setText(radius);
 
     }
@@ -70,7 +70,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public void updateOTWCount(TextView text) {
 
         // TODO: 2017-07-13 get number of responders on the way from server
-        String OTW = "000";
+        String OTW = "00";
         text.setText(OTW);
 
     }
@@ -112,7 +112,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     @Override
     public void onDialogPositiveClickHelp(DialogFragment dialog) {
         // User touched the dialog's positive button
-        // TODO: 2017-07-13 cancel the search
         //return to main activity
         makeAPICancel(true);
         Intent intent = new Intent(this, MainActivity.class);
@@ -132,13 +131,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 //        startActivity(intent);
 
     }
-    public void helpArrived(View view) {
-
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivity(intent);
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.information, menu);

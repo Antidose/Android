@@ -87,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         alertImage.setScaleType(ScaleType.FIT_CENTER);
         alertAnimation = (AnimationDrawable) alertImage.getDrawable();
         alertAnimation.start();
-
-
-
     }
 
     @Override

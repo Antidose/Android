@@ -63,19 +63,18 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
         token = settings.getString("Token", null);
 
-        //makeAPICallNumResponders(numComing, token); //update the number of responders going
 
         //grab location for distance calculations on the backend
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
             // Last location in phone was 2 minutes ago
             // Do something with the recent location fix
             //  otherwise wait for the update below
             getInfoHandler(token, location);
         } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
         }
     }
@@ -397,4 +396,3 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     }
 }
-

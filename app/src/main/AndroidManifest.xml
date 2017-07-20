@@ -24,7 +24,7 @@
             android:name=".PollingService"
             android:enabled="true"
             android:exported="true" />
-        
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">

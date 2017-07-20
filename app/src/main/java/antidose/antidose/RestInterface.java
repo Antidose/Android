@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
+import com.github.filosganga.geogson.model.Geometry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -147,6 +148,16 @@ public class RestInterface extends AppCompatActivity{
         }
     }
 
+    class ResponderGeometry{
+        String api_token;
+        Geometry location;
+
+        public ResponderGeometry(String api_token, Geometry location) {
+            this.api_token = api_token;
+            this.location = location;
+        }
+    }
+
     class NumberResponders{
 
         @Expose
@@ -184,7 +195,17 @@ public class RestInterface extends AppCompatActivity{
 
     }
 
+    class ResponderLatLong{
+        String api_token;
+        double latitude;
+        double longitude;
 
+        public ResponderLatLong(String api_token, double latitude,double longitude) {
+            this.api_token = api_token;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
 
     interface restInterface {
         // Request method and URL specified in the annotation
@@ -219,7 +240,7 @@ public class RestInterface extends AppCompatActivity{
         Call<MapInformation> requestInfo(@Body ResponderLocation responder);
 
         @POST("location")
-        Call<ResponseBody> sendLocationUpdate(@Body ResponderLocation responder);
+        Call<ResponseBody> sendLocationUpdate(@Body ResponderLatLong responder);
 
     }
 }

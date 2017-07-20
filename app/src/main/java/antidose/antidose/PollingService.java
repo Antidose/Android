@@ -12,8 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.github.filosganga.geogson.gson.GeometryAdapterFactory;
+import com.github.filosganga.geogson.model.Geometry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -29,8 +35,8 @@ public class PollingService extends Service
 {
     private static final String TAG = "PollingLocationService";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1800000; //in ms = 30 minutes I hope
-    //private static final int LOCATION_INTERVAL = 60000; //in ms = 1 minute I hope
+    //private static final int LOCATION_INTERVAL = 1800000; //in ms = 30 minutes I hope
+    private static final int LOCATION_INTERVAL = 1800000; //in ms = 1 minute I hope
     private static final float LOCATION_DISTANCE = 0f; //in m = 10km
 
     private class LocationListener implements android.location.LocationListener
@@ -158,7 +164,8 @@ public class PollingService extends Service
             stopSelf();
             return;
         }
-        Call<ResponseBody> call = apiService.sendLocationUpdate(new RestInterface().new ResponderLocation(token, location));
+
+        Call<ResponseBody> call = apiService.sendLocationUpdate(new RestInterface().new ResponderLatLong(token, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override

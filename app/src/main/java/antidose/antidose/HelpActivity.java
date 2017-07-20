@@ -54,7 +54,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         updateFonts();
         connectWebSocket();
 
-    //header
+        //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -223,8 +223,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
     private void connectWebSocket() {
         URI uri;
+        String url = getResources().getText(R.string.server_url).toString().replace("https", "ws") + "ws";
         try {
-            uri = new URI("ws://antidose-go.herokuapp.com/ws");
+            uri = new URI(url);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;

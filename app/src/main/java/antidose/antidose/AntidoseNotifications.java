@@ -102,6 +102,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
+                        .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Someone is experiencing an overdose " + distance + "m away")
                         .setContentText("Click to respond");
@@ -114,7 +115,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
-
+        //swipe to close
 
         mBuilder.setContentIntent(resultPendingIntent);
 

@@ -106,6 +106,10 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     @BindView(R.id.mapView)
     MapView mapView;
 
+    private float incidentLat = getIntent().getExtras().getParcelable("incident-latitude");
+    private float incidentLong = getIntent().getExtras().getParcelable("incident-longitude");
+
+
     private MapboxMap mapboxMap;
 
     private LocationManager locationManager;

@@ -14,8 +14,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -39,7 +37,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class AntidoseNotifications extends FirebaseMessagingService {
-    private FusedLocationProviderClient mFusedLocationClient;
     Location end = new Location("");
     int max,incidentId = 0;
     String notification = "";
@@ -78,18 +75,6 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
             Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             createNotification(location, max, incidentId);
-
-            /*mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener((Executor) this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                createNotification(location, max, incidentId);
-                            }
-                        }
-                    });*/
 
         } else if(notification.equals("dismiss")){
             try{

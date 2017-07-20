@@ -48,6 +48,10 @@ import timber.log.Timber;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.io.IOException;
 
 import okhttp3.ResponseBody;
@@ -63,7 +67,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public static final String TOKEN_PREFS_NAME = "User_Token";
     private WebSocketClient mWebSocketClient;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +75,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         updateFonts();
         connectWebSocket();
 
-        //header
+    //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -247,6 +250,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         String url = "ws" + getResources().getText(R.string.server_url).toString().replaceAll("http(s?)", "") + "ws";
         try {
             uri = new URI(url);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -269,6 +273,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                     // IDK PASS
                 }
                 mWebSocketClient.send(req.toString());
+
             }
 
             @Override

@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -19,6 +20,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 
 import retrofit2.Call;
@@ -32,6 +39,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     LocationManager mLocationManager;
     public static final String TOKEN_PREFS_NAME = "User_Token";
+    private WebSocketClient mWebSocketClient;
     String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         setContentView(R.layout.activity_notify);
 
         updateFonts();
+        connectWebSocket();
 
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -50,7 +59,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
         token = settings.getString("Token", null);
 
-        makeAPICallNumResponders(numComing, token); //update the number of responders going
+        //makeAPICallNumResponders(numComing, token); //update the number of responders going
 
         //grab location for distance calculations on the backend
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -269,5 +278,70 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         });
     }
 
+    public void updateOTWCount(TextView text, String s){
+
+        // TODO: 2017-07-13 get number of responders on the way from server
+
+
+        text.setText(s);
+
+    }
+
+    private void connectWebSocket() {
+        URI uri;
+        String url = "ws" + getResources().getText(R.string.server_url).toString().replaceAll("http(s?)", "") + "ws";
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        mWebSocketClient = new WebSocketClient(uri) {
+            @Override
+            public void onOpen(ServerHandshake serverHandshake) {
+                Log.i("Websocket", "Opened");
+                TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String IMEI = mngr.getDeviceId();
+                // {incidentID: string(12),
+                // ID: IMEI | Token}
+                JSONObject req = new JSONObject();
+                String incidentID = "abababababab"; // Gotta get this from server as response to alert.
+                try {
+                    req.put("incidentId", incidentID);
+                    req.put("userId", IMEI);
+                } catch (org.json.JSONException e) {
+                    // IDK PASS
+                }
+                mWebSocketClient.send(req.toString());
+            }
+
+            @Override
+            public void onMessage(String s) {
+                final String message = s;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //System.out.print(message);
+                        //TextView textView = (TextView)findViewById(R.id.messages);
+                        //textView.setText(textView.getText() + "\n" + message);
+                        Button numComing = (Button) findViewById(R.id.buttonGoing);
+                        updateOTWCount(numComing, message);
+                    }
+                });
+            }
+
+            @Override
+            public void onClose(int i, String s, boolean b) {
+                Log.i("Websocket", "Closed " + s);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.i("Websocket", "Error " + e.getMessage());
+            }
+        };
+        mWebSocketClient.connect();
+    }
 }
 

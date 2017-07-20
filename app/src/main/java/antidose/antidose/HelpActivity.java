@@ -1,5 +1,6 @@
 package antidose.antidose;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -30,6 +32,7 @@ import com.google.gson.GsonBuilder;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -235,7 +238,19 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 Log.i("Websocket", "Opened");
-                mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
+                TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String IMEI = mngr.getDeviceId();
+                // {incidentID: string(12),
+                // ID: IMEI | Token}
+                JSONObject req = new JSONObject();
+                String incidentID = "abababababab"; // Gotta get this from server as response to alert.
+                try {
+                    req.put("incidentId", incidentID);
+                    req.put("userId", IMEI);
+                } catch (org.json.JSONException e) {
+                    // IDK PASS
+                }
+                mWebSocketClient.send(req.toString());
             }
 
             @Override

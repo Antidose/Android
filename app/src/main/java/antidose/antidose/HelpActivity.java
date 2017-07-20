@@ -223,7 +223,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
     private void connectWebSocket() {
         URI uri;
-        String url = getResources().getText(R.string.server_url).toString().replace("https", "ws") + "ws";
+        String url = "ws" + getResources().getText(R.string.server_url).toString().replaceAll("http(s?)", "") + "ws";
         try {
             uri = new URI(url);
         } catch (URISyntaxException e) {

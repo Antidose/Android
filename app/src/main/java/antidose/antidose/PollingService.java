@@ -35,8 +35,8 @@ public class PollingService extends Service
 {
     private static final String TAG = "PollingLocationService";
     private LocationManager mLocationManager = null;
-    //private static final int LOCATION_INTERVAL = 1800000; //in ms = 30 minutes I hope
-    private static final int LOCATION_INTERVAL = 1800000; //in ms = 1 minute I hope
+    private static final int LOCATION_INTERVAL = 1800000; //in ms = 30 minutes I hope
+    //private static final int LOCATION_INTERVAL = 18000; //in ms = 18 s I hope
     private static final float LOCATION_DISTANCE = 0f; //in m = 10km
 
     private class LocationListener implements android.location.LocationListener

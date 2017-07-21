@@ -18,6 +18,8 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
+            Intent intentPolling = new Intent(context, PollingService.class);
+            context.startService(intentPolling);
             Intent pushIntent = new Intent(context, AntidoseNotifications.class);
             context.startService(pushIntent);
         }

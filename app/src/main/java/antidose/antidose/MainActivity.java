@@ -24,6 +24,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

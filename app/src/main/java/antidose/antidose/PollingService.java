@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.github.filosganga.geogson.gson.GeometryAdapterFactory;
-import com.github.filosganga.geogson.model.Geometry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

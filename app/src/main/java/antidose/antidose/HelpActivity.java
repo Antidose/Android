@@ -85,7 +85,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         updateRadius(radius);
         updateResCount(resCount);
-        updateOTWCount(OTW, "00");
+        updateOTWCount(OTW, "0");
 
     }
 
@@ -100,7 +100,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public void updateResCount(TextView text) {
 
         // TODO: 2017-07-13 get responder count in radius from server
-        String count = "000";
+        String count = "00";
         text.setText(count);
 
     }

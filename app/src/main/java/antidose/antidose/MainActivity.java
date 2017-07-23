@@ -172,9 +172,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         startActivity(intent);
     }
 
-    public void goNotify(View view) {
+    public void goHelp(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, NotifyActivity.class);
+        Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
 
     }

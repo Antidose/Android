@@ -10,7 +10,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-import com.github.filosganga.geogson.model.Geometry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -150,9 +149,9 @@ public class RestInterface extends AppCompatActivity{
 
     class ResponderGeometry{
         String api_token;
-        Geometry location;
+        Location location;
 
-        public ResponderGeometry(String api_token, Geometry location) {
+        public ResponderGeometry(String api_token, Location location) {
             this.api_token = api_token;
             this.location = location;
         }

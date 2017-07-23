@@ -115,12 +115,12 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             makeAPICallRespond(true, true, token);
 
         } else {
-            makeAPICallRespond(false, true);
+            makeAPICallRespond(false, true, token);
         }
     }
 
     public void cannotGo(View view) {
-        makeAPICallRespond(false, false);
+        makeAPICallRespond(false, false, token);
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
@@ -365,7 +365,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
         String token = settings.getString("Token", null);
 
-        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, hasKit, isGoing, incidentID));
+        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, hasKit, isGoing));
 
         call.enqueue(new Callback<RestInterface.IncidentLocation>() {
             @Override
@@ -378,10 +378,10 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                             return;
                         }
 
-                        Location incidentLocation = response.body().getLocation();
+                        //float lat = response.body().getLocation();
 
                         Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
-                        intent.putExtra("incident-location", incidentLocation);
+                       //intent.putExtra("incident-location", incidentLocation);
                         startActivity(intent);
 
                     }

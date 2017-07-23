@@ -105,13 +105,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="418dp"
-        android:onClick="goNotify"
+        android:onClick="goNavigate"
         android:text="Button"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.01"
-        tools:layout_editor_absoluteX="148dp" />
+        app:layout_constraintVertical_bias="0.048"
+        tools:layout_editor_absoluteX="161dp" />
 
     <Button
         android:id="@+id/button_settings"

@@ -113,6 +113,7 @@ public class VerificationActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(FIREBASE_ID, 0);
         String firebaseId = settings.getString(FIREBASE_ID, "");
 
+
         UserVerify userVerify = new RestInterface().new UserVerify(phoneNumber, verifyNumber, firebaseId);
         Call<ApiToken> call = apiService.verifyUser(userVerify);
         Timber.d(userVerify.phone_number + " " + userVerify.token );

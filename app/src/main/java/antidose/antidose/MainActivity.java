@@ -24,6 +24,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -51,7 +53,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
+        if (token != null) {
+            Button regButton = (Button) findViewById(R.id.button_login);
+            regButton.setVisibility(View.INVISIBLE);
+            Button settingButton = (Button) findViewById(R.id.button_settings);
+            settingButton.setVisibility(View.VISIBLE);
+            //service should only run when the user is registered
+            Intent intent = new Intent(this, PollingService.class);
+            startService(intent);
+        }
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
@@ -63,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
         updateFonts();
-
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -74,17 +89,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         alertImage.setScaleType(ScaleType.FIT_CENTER);
         alertAnimation = (AnimationDrawable) alertImage.getDrawable();
         alertAnimation.start();
-
-        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
-        String token = settings.getString("Token", null);
-
-        if (token != null) {
-            Button regButton = (Button) findViewById(R.id.button_login);
-            regButton.setVisibility(View.INVISIBLE);
-            Button settingButton = (Button) findViewById(R.id.button_settings);
-            settingButton.setVisibility(View.VISIBLE);
-        }
-
     }
 
     @Override
@@ -107,6 +111,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
         if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
             // Last location in phone was 2 minutes ago
             // Do something with the recent location fix
@@ -130,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onProviderDisabled(String arg0) {}
     public void onProviderEnabled(String arg0) {}
     public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
-
 
     public void updateFonts(){
 
@@ -157,9 +172,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         startActivity(intent);
     }
 
-    public void goNotify(View view) {
+    public void goHelp(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, NotifyActivity.class);
+        Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
 
     }

@@ -11,5 +11,9 @@
     <color name="antidoseRed">#ff434c</color>
     <color name="white">#ffffff</color>
     <color name="colorSuccess">#adf47a</color>
-    <color name="transwhite">#ffffff</color>
+    <color name="transwhite">#34ffffff</color>
+    <color name="lessTransWhite">#c3ffffff</color>
+    <color name="darkGrey">#292929</color>
+    <color name="black">#000000</color>
+    <color name="lightRed">#ff7980</color>
 </resources>

@@ -106,6 +106,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     @BindView(R.id.mapView)
     MapView mapView;
 
+
     private MapboxMap mapboxMap;
 
     private LocationManager locationManager;
@@ -137,9 +138,6 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         //checkPermission()
         layerIds = new ArrayList<>();
         super.onCreate(savedInstanceState);
-
-
-
 
         navigation = new MapboxNavigation(this, "pk.eyJ1IjoiZmFicmljYXNpYW4iLCJhIjoiY2ozN3hsd3J1MDE3czJxcXB0bjA4YTJjaCJ9.1ngrjbfPAflOdbG79fEqQg");
         Mapbox.getInstance(this, "pk.eyJ1IjoiZmFicmljYXNpYW4iLCJhIjoiY2ozN3hsd3J1MDE3czJxcXB0bjA4YTJjaCJ9.1ngrjbfPAflOdbG79fEqQg");

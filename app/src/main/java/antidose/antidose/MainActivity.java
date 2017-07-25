@@ -1,19 +1,29 @@
 package antidose.antidose;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
+import android.widget.TextView;
+
+import butterknife.OnClick;
+
+import static antidose.antidose.R.id.action_info;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,34 +72,50 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                goInfo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     public void goNavigate(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, NavigationActivity.class);
         startActivity(intent);
     }
 
     public void goNotify(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, NotifyActivity.class);
         startActivity(intent);
 
     }
 
     public void goSettings(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
-
     }
+
     public void callEMS(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, ContactEMSActivity.class);
         startActivity(intent);
     }
 
+    public void goInfo() {
+        Intent intent = new Intent(this, InformationActivity.class);
+        startActivity(intent);
+    }
+
+    public void alarmNoise(View view) {
+        Intent intent = new Intent(this, InformationActivity.class);
+        startActivity(intent);
+    }
+
     public void goHelp(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
 

@@ -1,6 +1,10 @@
 package antidose.antidose;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +14,9 @@ import android.view.View;
 import android.widget.TextView;
 
 public class HelpActivity extends AppCompatActivity implements cancelSearchFragment.CancelSearchListener, confirmHelpFragment.ConfirmHelpListener{
+
+    AudioManager audioManager;
+    MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +34,21 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         updateRadius(radius);
         updateResCount(resCount);
         updateOTWCount(OTW);
+        audioManager = (AudioManager) getSystemService(this.AUDIO_SERVICE);
+        mp = MediaPlayer.create(this, R.raw.moz);
+        playAlarm();
 
+    }
+
+    public void playAlarm() {
+        while(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) {
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
+        }
+        mp.start();
+    }
+
+    public void stopAlarm() {
+        mp.stop();
     }
 
     public void updateRadius(TextView text) {

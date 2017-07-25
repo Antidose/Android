@@ -108,8 +108,12 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     public void canGo(View view) {
         String hasKit = view.getTag().toString();
-        if (hasKit == "true") {
+        if (hasKit.equals("true")) {
             makeAPICallRespond(true, true, token);
+            Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+            intent.putExtra("incident-latitude", 48.427528);
+            intent.putExtra("incident-longitude", -123.359350);
+            startActivity(intent);
         } else {
             makeAPICallRespond(false, true, token);
         }

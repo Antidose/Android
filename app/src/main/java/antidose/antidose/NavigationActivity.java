@@ -2,6 +2,7 @@ package antidose.antidose;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.location.Location;
@@ -27,6 +28,7 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.constants.MyBearingTracking;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationSource;
@@ -45,6 +47,7 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.Constants;
 import com.mapbox.services.android.location.LostLocationEngine;
 import com.mapbox.services.android.navigation.v5.MapboxNavigation;
+import com.mapbox.services.android.navigation.v5.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.NavigationConstants;
 import com.mapbox.services.android.navigation.v5.RouteProgress;
 import com.mapbox.services.android.navigation.v5.listeners.AlertLevelChangeListener;
@@ -106,8 +109,8 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     @BindView(R.id.mapView)
     MapView mapView;
 
-    private float incidentLat = getIntent().getExtras().getParcelable("incident-latitude");
-    private float incidentLong = getIntent().getExtras().getParcelable("incident-longitude");
+    //private float incidentLat = getIntent().getExtras().getParcelable("incident-latitude");
+    //private float incidentLong = getIntent().getExtras().getParcelable("incident-longitude");
 
 
     private MapboxMap mapboxMap;
@@ -119,6 +122,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     // Navigation related variables
     private LocationEngine locationEngine;
     private MapboxNavigation navigation;
+    MapboxNavigationOptions options;
     private DirectionsRoute route;
     private LocationLayerPlugin locationLayerPlugin;
 
@@ -135,14 +139,19 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     private static final String CONGESTION_KEY = "congestion";
     private List<String> layerIds;
     private boolean visible;
+
+    private float destLat, destLng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO: 2017-07-11  add checkPermission
         //checkPermission()
+
+        Intent intent = getIntent();
+        destLat = (float) intent.getDoubleExtra("incident-latitude", 0.0);
+        destLng = (float) intent.getDoubleExtra("incident-longitude", 0.0);
         layerIds = new ArrayList<>();
         super.onCreate(savedInstanceState);
-
-
 
 
         navigation = new MapboxNavigation(this, "pk.eyJ1IjoiZmFicmljYXNpYW4iLCJhIjoiY2ozN3hsd3J1MDE3czJxcXB0bjA4YTJjaCJ9.1ngrjbfPAflOdbG79fEqQg");
@@ -165,22 +174,25 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         locationEngine.addLocationEngineListener(this);
         locationEngine.activate();
         locationEngine.requestLocationUpdates();
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
 
 
     }
 
-
-    @Override
-    public void onMapReady(MapboxMap mapboxMap){
-        this.mapboxMap = mapboxMap;
+    public void startNavigation(){
+        mapboxMap.setMyLocationEnabled(false);
 
         locationLayerPlugin = new LocationLayerPlugin(mapView, mapboxMap, locationEngine);
         locationLayerPlugin.setLocationLayerEnabled(LocationLayerMode.NAVIGATION);
+    }
+    @Override
+    public void onMapReady(MapboxMap mapboxMap){
+        this.mapboxMap = mapboxMap;
         //mapboxMap.setOnMapClickListener(this);
         mapboxMap.setLocationSource(locationEngine);
+
 
         //mapboxMap.setLocationSource(locationEngine);
         //newOrigin();
@@ -189,10 +201,14 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         mapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
         mapboxMap.setMyLocationEnabled(true);
         mapboxMap.getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
+        mapboxMap.getTrackingSettings().setMyBearingTrackingMode(MyBearingTracking.COMPASS);
+        mapboxMap.getTrackingSettings().setDismissBearingTrackingOnGesture(false);
+        //mapboxMap.getTrackingSettings().setDismissAllTrackingOnGesture(false);
 
         initialize();
 
         calculateRoute();
+        navigation.setSnapToRoute(true);
         navigation.addNavigationEventListener(this);
         navigation.addOffRouteListener(this);
         navigation.addProgressChangeListener(this);
@@ -242,10 +258,12 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     private void calculateRoute(){
         Location userLocation = mapboxMap.getMyLocation();
         Position origin = Position.fromCoordinates(userLocation.getLongitude(), userLocation.getLatitude());
-        Position destination = Position.fromCoordinates(-123.416981, 48.426303);
-        //Position origin = Position.fromCoordinates(locationEngine.getLastLocation().getLatitude(),
-        //locationEngine.getLastLocation().getLongitude());
-        //navigation.setLocationEngine(locationEngine);
+        Position destination = Position.fromCoordinates(destLng, destLat);
+
+        LatLng point = new LatLng(destination.getLatitude(), destination.getLongitude());
+        Marker marker = mapboxMap.addMarker(new MarkerOptions().position(point));
+        pathMarkers.add(marker);
+
         navigation.getRoute(origin, destination, new Callback<DirectionsResponse>() {
             @Override
             public void onResponse(
@@ -274,7 +292,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     //public void
 
     public void onProgressChange(Location location, RouteProgress routeProgress) {
-        locationLayerPlugin.forceLocationUpdate(location);
+        //locationLayerPlugin.forceLocationUpdate(location);
         Timber.d("onProgressChange: fraction of route traveled: %f", routeProgress.getFractionTraveled());
     }
 
@@ -305,9 +323,9 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     public void onStart() {
         super.onStart();
         mapView.onStart();
-        if (locationLayerPlugin != null) {
+/*        if (locationLayerPlugin != null) {
             locationLayerPlugin.onStart();
-        }
+        }*/
         navigation.onStart();
 
     }
@@ -329,7 +347,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         super.onStop();
         mapView.onStop();
         navigation.onStop();
-        locationLayerPlugin.onStop();
+        //locationLayerPlugin.onStop();
     }
 
     @Override

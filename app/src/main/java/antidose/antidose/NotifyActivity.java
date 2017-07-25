@@ -9,10 +9,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,6 +35,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+
 
 public class NotifyActivity extends AppCompatActivity implements LocationListener {
 
@@ -41,6 +46,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     public static final String TOKEN_PREFS_NAME = "User_Token";
     private WebSocketClient mWebSocketClient;
     String token;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,26 +58,23 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
-
         Button numComing = (Button) findViewById(R.id.buttonGoing);
 
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
         token = settings.getString("Token", null);
 
-        //makeAPICallNumResponders(numComing, token); //update the number of responders going
 
         //grab location for distance calculations on the backend
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
             // Last location in phone was 2 minutes ago
             // Do something with the recent location fix
             //  otherwise wait for the update below
             getInfoHandler(token, location);
         } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 
         }
     }
@@ -110,10 +113,6 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         String hasKit = view.getTag().toString();
         if (hasKit.equals("true")) {
             makeAPICallRespond(true, true, token);
-            Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
-            intent.putExtra("incident-latitude", 48.427528);
-            intent.putExtra("incident-longitude", -123.359350);
-            startActivity(intent);
         } else {
             makeAPICallRespond(false, true, token);
         }
@@ -257,7 +256,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 retrofit.create(RestInterface.restInterface.class);
 
 
-        Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderLocation(token, location));
+        Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderLatLong(token, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<RestInterface.MapInformation>() {
             @Override
@@ -347,5 +346,52 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         };
         mWebSocketClient.connect();
     }
-}
 
+    public void makeAPICallRespond(boolean hasKit, final boolean isGoing){
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getResources().getText(R.string.server_url).toString())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RestInterface.restInterface apiService =
+                retrofit.create(RestInterface.restInterface.class);
+
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
+        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, hasKit, isGoing));
+
+        call.enqueue(new Callback<RestInterface.IncidentLocation>() {
+            @Override
+            public void onResponse(Call<RestInterface.IncidentLocation> call, Response<RestInterface.IncidentLocation> response) {
+                if (response.isSuccessful()) {
+                        Timber.d("Responding to incident successful: ");
+                        if (!isGoing) {
+                            //person clicked 'no im not going'
+                            //return to caller, caller redirects to main
+                            return;
+                        }
+
+                        //float lat = response.body().getLocation();
+
+                        Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
+                       //intent.putExtra("incident-location", incidentLocation);
+                        startActivity(intent);
+
+                    }
+                }
+
+            @Override
+            public void onFailure(Call<RestInterface.IncidentLocation> call, Throwable t) {
+                Log.d("D", "User registration failed :(");
+                Log.d("D", t.toString());
+            }
+        });
+
+    }
+}

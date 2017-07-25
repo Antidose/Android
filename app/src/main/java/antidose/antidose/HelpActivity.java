@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.content.SharedPreferences;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,23 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
+
 public class HelpActivity extends AppCompatActivity implements cancelSearchFragment.CancelSearchListener, confirmHelpFragment.ConfirmHelpListener{
 
     public static final String TOKEN_PREFS_NAME = "User_Token";
@@ -57,7 +75,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         updateFonts();
         connectWebSocket();
 
-        //header
+    //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -67,7 +85,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         updateRadius(radius);
         updateResCount(resCount);
-        updateOTWCount(OTW, "00");
+        updateOTWCount(OTW, "0");
 
     }
 
@@ -82,7 +100,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public void updateResCount(TextView text) {
 
         // TODO: 2017-07-13 get responder count in radius from server
-        String count = "000";
+        String count = "00";
         text.setText(count);
 
     }
@@ -109,8 +127,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     public void onDialogPositiveClickCancel(DialogFragment dialog) {
         // User touched the dialog's positive button
         makeAPICancel(false);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -135,8 +151,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         // User touched the dialog's positive button
         //return to main activity
         makeAPICancel(true);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -188,6 +202,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     }
 
     public void makeAPICancel(boolean isResolved){
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", null);
+
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -199,8 +216,10 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String IMEI = mngr.getDeviceId();
 
-        Call<ResponseBody> call = apiService.cancelSearch(new RestInterface().new CancelSearch(MainActivity.IMEI, isResolved));
+        Call<ResponseBody> call = apiService.cancelSearch(new RestInterface().new CancelSearch(IMEI, isResolved));
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -208,6 +227,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 if (response.isSuccessful()){
                     try {
                         Timber.d("Incident Complete successful: " + response.body().string());
+
+                        Intent intent = new Intent(HelpActivity.this, MainActivity.class);
+                        startActivity(intent);
                         return;
 
                     }catch (IOException e) {
@@ -229,6 +251,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         String url = "ws" + getResources().getText(R.string.server_url).toString().replaceAll("http(s?)", "") + "ws";
         try {
             uri = new URI(url);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -251,6 +274,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                     // IDK PASS
                 }
                 mWebSocketClient.send(req.toString());
+
             }
 
             @Override

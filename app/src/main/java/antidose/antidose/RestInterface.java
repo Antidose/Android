@@ -98,6 +98,7 @@ public class RestInterface extends AppCompatActivity{
         public CancelSearch(String IMEI, boolean isResolved) {
             this.IMEI = IMEI;
             this.is_resolved = isResolved;
+
         }
 
     }
@@ -112,13 +113,13 @@ public class RestInterface extends AppCompatActivity{
             this.api_token = api_token;
             this.has_kit = hasKit;
             this.is_going = isGoing;
+
         }
 
     }
 
     class IncidentLocation{
 
-        @Expose
         private float latitude;
         private float longitude;
 
@@ -141,6 +142,16 @@ public class RestInterface extends AppCompatActivity{
         Location location;
 
         public ResponderLocation(String api_token, Location location) {
+            this.api_token = api_token;
+            this.location = location;
+        }
+    }
+
+    class ResponderGeometry{
+        String api_token;
+        Location location;
+
+        public ResponderGeometry(String api_token, Location location) {
             this.api_token = api_token;
             this.location = location;
         }
@@ -178,11 +189,22 @@ public class RestInterface extends AppCompatActivity{
 
         public float getDuration() {
             return duration;
+
         }
 
     }
 
+    class ResponderLatLong{
+        String api_token;
+        double latitude;
+        double longitude;
 
+        public ResponderLatLong(String api_token, double latitude,double longitude) {
+            this.api_token = api_token;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
 
     interface restInterface {
         // Request method and URL specified in the annotation
@@ -214,7 +236,10 @@ public class RestInterface extends AppCompatActivity{
         Call<NumberResponders> numberResponders(@Body ApiToken token);
 
         @POST("requestInfo")
-        Call<MapInformation> requestInfo(@Body ResponderLocation responder);
+        Call<MapInformation> requestInfo(@Body ResponderLatLong responder);
+
+        @POST("location")
+        Call<ResponseBody> sendLocationUpdate(@Body ResponderLatLong responder);
 
     }
 }

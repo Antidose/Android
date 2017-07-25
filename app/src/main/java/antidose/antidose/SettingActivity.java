@@ -83,7 +83,7 @@ public class SettingActivity extends AppCompatActivity implements DeleteConfirmF
 
         //when the page loads, we need to set the button show what their pref is
         SharedPreferences settings = getSharedPreferences(STATUS_PREFS_NAME, 0);
-        Boolean status = settings.getBoolean("Status", false);
+        Boolean status = settings.getBoolean("Status", true);
 
         if(status){
             btn.setChecked(true);

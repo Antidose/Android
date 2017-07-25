@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     Manifest.permission.READ_PHONE_STATE}, 1);
         }
 
+        //get users imei to make the request
+
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        IMEI = mngr.getDeviceId();
         updateFonts();
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -103,10 +107,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Button loadButton = (Button) findViewById(R.id.buttonLoading);
         loadButton.setVisibility(View.VISIBLE);
 
-        //get users imei to make the request
 
-        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String IMEI = mngr.getDeviceId();
 
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -172,6 +173,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         startActivity(intent);
     }
 
+    public void goNotify(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, NotifyActivity.class);
+        startActivity(intent);
+    }
+
     public void goHelp(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, HelpActivity.class);
@@ -204,33 +211,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
 
-        Call<ResponseBody> call = apiService.sendHelp(new RestInterface().new Alert(IMEI, location));
+        Call<RestInterface.startIncidentResponse> call = apiService.sendHelp(new RestInterface().new Alert(IMEI, location.getLatitude(), location.getLongitude()));
 
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<RestInterface.startIncidentResponse>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<RestInterface.startIncidentResponse> call, Response<RestInterface.startIncidentResponse> response) {
                 if (response.isSuccessful()){
-                    try {
-                        Timber.d("Alert request successful: " + response.body().string());
+                        Timber.d("Alert request successful");
+
                         Intent intent = new Intent(MainActivity.this, HelpActivity.class);
 
-                        //intent.putIntExtra("INCIDENT_ID", incidentId);
-                        //on the other end int s = getIntent().getIntExtra("EXTRA_SESSION_ID");
+                        intent.putExtra("INCIDENT_ID", response.body().getIncidentId().toString());
+                        intent.putExtra("RADIUS", Integer.toString(response.body().getRaidus()/1000));
+                        intent.putExtra("NUM_RESPONDERS", Integer.toString(response.body().getNumNotified()));
+
                         Button loadButton = (Button) findViewById(R.id.buttonLoading);
                         loadButton.setVisibility(View.INVISIBLE);
                         startActivity(intent);
-                        //this response will come back with a user list and an incident ID which need to go somewhere
-                        //list needs to go to the piush notification meme
-                        //incident ID needs to just be passed
-
-                    }catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<RestInterface.startIncidentResponse> call, Throwable t) {
                 Log.d("D", "Alert Request failed :(");
                 Log.d("D", t.toString());
             }

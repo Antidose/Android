@@ -99,6 +99,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
         Intent resultIntent = new Intent(this, NotifyActivity.class);
         resultIntent.putExtra("BEARING", bearing);
+        resultIntent.putExtra("INCID", Integer.toString(incidentId));
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)

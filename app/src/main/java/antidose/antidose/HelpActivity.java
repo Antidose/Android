@@ -93,6 +93,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         //// TODO: 2017-07-13 get search radius from server
         String radius = "00";
+        radius = getIntent().getStringExtra("RADIUS");
         text.setText(radius);
 
     }
@@ -101,6 +102,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         // TODO: 2017-07-13 get responder count in radius from server
         String count = "00";
+        count = getIntent().getStringExtra("NUM_RESPONDERS");
         text.setText(count);
 
     }

@@ -82,11 +82,14 @@ public class RestInterface extends AppCompatActivity{
     class Alert {
 
         String IMEI;
-        Location location;
+        double latitude;
+        double longitude;
 
-        public Alert(String IMEI, Location location) {
+
+        public Alert(String IMEI, double latitude, double longitude) {
             this.IMEI = IMEI;
-            this.location = location;
+            this.latitude = latitude;
+            this.longitude = longitude;
         }
     }
 
@@ -106,11 +109,13 @@ public class RestInterface extends AppCompatActivity{
     class Responder{
 
         String api_token;
+        String inc_id;
         boolean has_kit;
         boolean is_going;
 
-        public Responder(String api_token, boolean hasKit, boolean isGoing) {
+        public Responder(String api_token, String inc_id, boolean hasKit, boolean isGoing) {
             this.api_token = api_token;
+            this.inc_id = inc_id;
             this.has_kit = hasKit;
             this.is_going = isGoing;
 
@@ -174,23 +179,59 @@ public class RestInterface extends AppCompatActivity{
 
     class MapInformation{
 
-        @Expose
-        private float distance;
-        private float duration;
+            @SerializedName("dist")
+            @Expose
+            private float dist;
+            @SerializedName("time")
+            @Expose
+            private float time;
 
-        public MapInformation(float dist, float dur) {
-            this.distance = dist;
-            this.duration = dur;
+            public float getDist() {
+                return dist;
+            }
+
+            public float getTime() {
+                return time;
+            }
         }
+    class ResponderIncLatLong{
+        String api_token;
+        String inc_id;
+        double latitude;
+        double longitude;
 
-        public float getDistance() {
-            return distance;
+        public ResponderIncLatLong(String api_token, String inc_id, double latitude,double longitude) {
+            this.api_token = api_token;
+            this.inc_id = inc_id;
+            this.latitude = latitude;
+            this.longitude = longitude;
         }
+    }
 
-        public float getDuration() {
-            return duration;
+    class startIncidentResponse{
 
-        }
+
+            @SerializedName("incident_id")
+            @Expose
+            private String incidentId;
+            @SerializedName("num_notified")
+            @Expose
+            private int numNotified;
+            @SerializedName("raidus")
+            @Expose
+            private int raidus;
+
+            public String getIncidentId() {
+                return incidentId;
+            }
+
+            public int getNumNotified() {
+                return numNotified;
+            }
+
+            public int getRaidus() {
+                return raidus;
+            }
 
     }
 
@@ -223,8 +264,8 @@ public class RestInterface extends AppCompatActivity{
         @POST("deleteAccount")
         Call<ResponseBody> deleteAccount(@Body ApiToken token);
 
-        @POST("alert")
-        Call<ResponseBody> sendHelp(@Body Alert alert);
+        @POST("startIncident")
+        Call<startIncidentResponse> sendHelp(@Body Alert alert);
 
         @POST("stopIncident")
         Call<ResponseBody> cancelSearch(@Body CancelSearch cancel);
@@ -235,8 +276,8 @@ public class RestInterface extends AppCompatActivity{
         @POST("numResponders")
         Call<NumberResponders> numberResponders(@Body ApiToken token);
 
-        @POST("requestInfo")
-        Call<MapInformation> requestInfo(@Body ResponderLatLong responder);
+        @POST("getInfoResponder")
+        Call<MapInformation> requestInfo(@Body ResponderIncLatLong responder);
 
         @POST("location")
         Call<ResponseBody> sendLocationUpdate(@Body ResponderLatLong responder);

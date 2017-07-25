@@ -174,9 +174,16 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
+       /* Intent intent = getIntent();
+        String incid = intent.getStringExtra("INCID");
+        if(incid == null){
+            //error
+            return;
+        }
+        */
+       String inc_id = "1";
 
-
-        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, hasKit, isGoing));
+        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, inc_id, hasKit, isGoing));
 
         call.enqueue(new Callback<RestInterface.IncidentLocation>() {
             @Override
@@ -210,38 +217,38 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     }
 
-    public void makeAPICallNumResponders(final TextView numComing, String token){
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getResources().getText(R.string.server_url).toString())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        RestInterface.restInterface apiService =
-                retrofit.create(RestInterface.restInterface.class);
-
-
-        Call<RestInterface.NumberResponders> call = apiService.numberResponders(new RestInterface().new ApiToken(token));
-
-        call.enqueue(new Callback<RestInterface.NumberResponders>() {
-            @Override
-            public void onResponse(Call<RestInterface.NumberResponders> call, Response<RestInterface.NumberResponders> response) {
-                if (response.isSuccessful()) {
-                    Timber.d("Got number of responders: ");
-                    numComing.setText(response.body().getResponders());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RestInterface.NumberResponders> call, Throwable t) {
-                Log.d("D", "Getting number responders failed :(");
-                Log.d("D", t.toString());
-            }
-        });
-    }
+//    public void makeAPICallNumResponders(final TextView numComing, String token){
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(getResources().getText(R.string.server_url).toString())
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//
+//        RestInterface.restInterface apiService =
+//                retrofit.create(RestInterface.restInterface.class);
+//
+//
+//        Call<RestInterface.NumberResponders> call = apiService.numberResponders(new RestInterface().new ApiToken(token));
+//
+//        call.enqueue(new Callback<RestInterface.NumberResponders>() {
+//            @Override
+//            public void onResponse(Call<RestInterface.NumberResponders> call, Response<RestInterface.NumberResponders> response) {
+//                if (response.isSuccessful()) {
+//                    Timber.d("Got number of responders: ");
+//                    numComing.setText(response.body().getResponders());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RestInterface.NumberResponders> call, Throwable t) {
+//                Log.d("D", "Getting number responders failed :(");
+//                Log.d("D", t.toString());
+//            }
+//        });
+//    }
 
     public void makeAPICallMapInfo(final TextView distance, final TextView duration, String token, Location location){
         Gson gson = new GsonBuilder()
@@ -255,9 +262,15 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
-
-
-        Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderLatLong(token, location.getLatitude(), location.getLongitude()));
+        /*Intent intent = getIntent();
+        String inc_id = intent.getStringExtra("INCID");
+        if(inc_id == null){
+            //error
+            return;
+        }
+*/
+        String inc_id = "1"; //FOR TESTING ONLY
+        Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderIncLatLong(token, inc_id, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<RestInterface.MapInformation>() {
             @Override
@@ -265,12 +278,14 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 if (response.isSuccessful()) {
                     Timber.d("Got map information: ");
                     //parse
-                    String km = Integer.toString((int) (response.body().getDistance())/1000);
-                    distance.setText(km + " KM");
 
-                    String minutes = Integer.toString((int) (response.body().getDuration())/60);
-                    String seconds = Integer.toString((int) (response.body().getDuration())%60);
-                    duration.setText(minutes+":"+seconds+" MIN DRIVE");
+                    String km = Integer.toString((int) (response.body().getDist())/1000);
+                    distance.setText(km);
+
+                    String minutes = Integer.toString((int)(response.body().getTime())/60);
+                    String seconds = Integer.toString((int)(response.body().getDist())%60);
+                    duration.setText(minutes+":"+seconds);
+
                 }
             }
 
@@ -348,7 +363,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         mWebSocketClient.connect();
     }
 
-    public void makeAPICallRespond(boolean hasKit, final boolean isGoing){
+   /* public void makeAPICallRespond(boolean hasKit, final boolean isGoing){
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -394,5 +409,5 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             }
         });
 
-    }
+    } */
 }

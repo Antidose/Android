@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/header"
+    android:background="@drawable/repeatbackground"
 
     tools:context="antidose.antidose.MainActivity"
     tools:layout_editor_absoluteY="81dp"
@@ -14,7 +14,7 @@
         android:id="@+id/my_toolbar"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:elevation="4dp"
         app:layout_constraintHorizontal_bias="0.476"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -28,14 +28,13 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send Me Help"
-        android:textAppearance="@android:style/TextAppearance.Large.Inverse"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="86dp"
+        android:text="Send Me Help"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintLeft_toRightOf="@+id/imageButton"
         app:layout_constraintRight_toLeftOf="@+id/imageButton"
-        app:layout_constraintLeft_toRightOf="@+id/imageButton" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/imageButton"
@@ -45,33 +44,35 @@
         android:layout_marginTop="8dp"
         android:background="@null"
         android:cropToPadding="false"
-        android:onClick="goHelp"
+        android:onClick="sendAlert"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.445"
-        app:srcCompat="@drawable/alert1"
-        app:layout_constraintHorizontal_bias="0.497" />
+        app:srcCompat="@drawable/alert1" />
 
     <Button
         android:id="@+id/button_login"
-        android:layout_width="0dp"
-        android:layout_height="59dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginTop="499dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/roundedbutton"
+        android:backgroundTint="@color/white"
         android:elevation="10dp"
         android:onClick="register"
         android:text="Register to be a Responder"
-        android:textColor="@color/colorPrimaryDark"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.848" />
 
     <TextView
         android:id="@+id/textView2"
@@ -104,12 +105,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="418dp"
-        android:onClick="goNotify"
+        android:onClick="goNavigate"
         android:text="Button"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="48dp" />
+        app:layout_constraintVertical_bias="0.048"
+        tools:layout_editor_absoluteX="161dp" />
 
     <Button
         android:id="@+id/button_settings"
@@ -122,7 +124,8 @@
         android:background="@color/colorAccent"
         android:onClick="goSettings"
         android:text="Account Settings"
-        android:textColor="@color/colorPrimaryDark"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textStyle="bold"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/button_login"
         app:layout_constraintHorizontal_bias="0.497"
@@ -132,20 +135,23 @@
         app:layout_constraintVertical_bias="0.476" />
 
     <Button
-        android:id="@+id/alarmshit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="alarmNoise"
-        android:text="Alarm"
+        android:id="@+id/buttonLoading"
+        android:layout_width="192dp"
+        android:layout_height="117dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.791"
-        app:layout_constraintLeft_toRightOf="@+id/button4"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.815" />
+        android:background="@color/colorPrimary"
+        android:text="Loading Request..."
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/button_login"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="@+id/my_toolbar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.471"
+        tools:layout_editor_absoluteY="248dp" />
 
 </android.support.constraint.ConstraintLayout>

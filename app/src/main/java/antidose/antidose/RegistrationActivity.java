@@ -3,6 +3,7 @@ package antidose.antidose;
 import antidose.antidose.RestInterface.*;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -45,6 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        updateFonts();
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -91,6 +94,28 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+    public void updateFonts(){
+
+            Typeface custom_font = Typeface.createFromAsset(getAssets(), "font/gravitylight.otf");
+            Typeface custom_font_regular = Typeface.createFromAsset(getAssets(), "font/gravityregular.otf");
+
+            TextView tx = (TextView)findViewById(R.id.textViewRegister);
+            tx.setTypeface(custom_font);
+
+            EditText ex1 = (EditText)findViewById(R.id.editTextFirstName);
+            EditText ex2 = (EditText)findViewById(R.id.editTextLastName);
+            EditText ex3 = (EditText)findViewById(R.id.editTextPhoneNumber);
+
+            ex1.setTypeface(custom_font);
+            ex2.setTypeface(custom_font);
+            ex3.setTypeface(custom_font);
+
+            Button b1 = (Button)findViewById(R.id.buttonRegister);
+            b1.setTypeface(custom_font);
+
+        }
+
+
     public void register(View view) {
 
         Gson gson = new GsonBuilder()
@@ -134,6 +159,8 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     public void verification(){
         String phoneNumber = editTextPhoneNumber.getText().toString().trim();

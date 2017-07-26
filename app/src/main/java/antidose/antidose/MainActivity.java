@@ -1,10 +1,11 @@
 package antidose.antidose;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.ActionBar;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
@@ -24,6 +27,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import butterknife.OnClick;
+
+import static antidose.antidose.R.id.action_info;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
@@ -97,6 +103,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                goInfo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void sendAlert(View view) {
 
         //bring up loading thing, this could take a sec
@@ -163,12 +181,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         b1.setTypeface(custom_font);
         Button b2 = (Button)findViewById(R.id.button_settings);
         b2.setTypeface(custom_font);
-
     }
 
     public void goNavigate(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, NavigationActivity.class);
+        startActivity(intent);
+    }
+
+    public void goNotify(View view) {
+        Intent intent = new Intent(this, NotifyActivity.class);
         startActivity(intent);
     }
 
@@ -180,14 +201,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public void goSettings(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, SettingActivity.class);
         startActivity(intent);
-
     }
+
     public void callEMS(View view) {
-        // Do something in response to button
         Intent intent = new Intent(this, ContactEMSActivity.class);
+        startActivity(intent);
+    }
+
+    public void goInfo() {
+        Intent intent = new Intent(this, InformationActivity.class);
         startActivity(intent);
     }
 
@@ -235,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 Log.d("D", t.toString());
             }
         });
-
     }
 
     public void register(View view) {

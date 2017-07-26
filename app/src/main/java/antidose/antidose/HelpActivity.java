@@ -1,22 +1,30 @@
 package antidose.antidose;
 
+import android.*;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.pm.PackageManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.content.SharedPreferences;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -64,8 +72,13 @@ import timber.log.Timber;
 
 public class HelpActivity extends AppCompatActivity implements cancelSearchFragment.CancelSearchListener, confirmHelpFragment.ConfirmHelpListener{
 
+    AudioManager audioManager;
+    MediaPlayer mp;
     public static final String TOKEN_PREFS_NAME = "User_Token";
     private WebSocketClient mWebSocketClient;
+    Button smsButton;
+    final private int MY_PERMISSIONS_REQUEST_SEND_SMS = 123;
+    String emsTextContents = "There is an overdose occuring at my location, please send help.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +99,70 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         updateRadius(radius);
         updateResCount(resCount);
         updateOTWCount(OTW, "0");
+        audioManager = (AudioManager) getSystemService(this.AUDIO_SERVICE);
+        mp = MediaPlayer.create(this, R.raw.alarm);
+        mp.setLooping(true);
 
+        Button dialerButton = (Button) findViewById(R.id.buttonDialEMS);
+        dialerButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:250-507-7525"));
+                startActivity(callIntent);
+            }
+        });
+    }
+
+    protected boolean checkSMSPermissions(){
+        int checkSMSPermission = ContextCompat.checkSelfPermission(HelpActivity.this, android.Manifest.permission.SEND_SMS);
+        if (checkSMSPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(HelpActivity.this, new String[]{android.Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+            return false;
+        }
+        else {
+            // Permission Granted
+            return true;
+        }
+    }
+
+    protected void hideSMSButton(){
+        smsButton = (Button) findViewById(R.id.smsEMS);
+        smsButton.setVisibility(View.GONE);
+    }
+
+    protected void sendSMS(){
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("2505077525", null, emsTextContents, null, null);
+        Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    sendSMS();
+                    hideSMSButton();
+                }
+                else {
+                    // permission denied, do nothing
+                }
+            }
+        }
+    }
+
+    public void playAlarm() {
+        while(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) != audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)) {
+            audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
+        }
+        mp.start();
+    }
+    public void stopAlarm() {
+        mp.stop();
     }
 
     public void updateRadius(TextView text) {

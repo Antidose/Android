@@ -223,7 +223,7 @@ public class RestInterface extends AppCompatActivity{
         @POST("deleteAccount")
         Call<ResponseBody> deleteAccount(@Body ApiToken token);
 
-        @POST("alert")
+        @POST("startIncident")
         Call<ResponseBody> sendHelp(@Body Alert alert);
 
         @POST("stopIncident")

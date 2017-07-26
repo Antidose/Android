@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.lang.Math.*;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -87,8 +88,12 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
             LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            createNotification(location, max, incidentId);
+            try {
+                Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                createNotification(location, max, incidentId);
+            } catch (SecurityException e) {
+
+            }
 
             // This is a notification dismissal
         } else if(notification.equals("dismiss")){
@@ -121,9 +126,9 @@ public class AntidoseNotifications extends FirebaseMessagingService {
                         .setDeleteIntent(createOnDismissedIntent(this, incidentId))
                         .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Someone is experiencing an overdose " +
-                                distance + "m away")
-                        .setContentText("Click to respond");
+                        .setContentTitle("Overdose " +
+                                Math.ceil(distance) + "m away!")
+                        .setContentText("Click to respond!");
 
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(

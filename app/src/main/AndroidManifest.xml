@@ -95,14 +95,12 @@
         </service>
 
         <!-- Declaring broadcast receiver for BOOT_COMPLETED event. -->
-        <!--
-            <receiver
+        <receiver
             android:name=".BootCompletedIntentReceiver" android:enabled="true" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-        -->
         <activity android:name=".InformationActivity" />
     </application>
 

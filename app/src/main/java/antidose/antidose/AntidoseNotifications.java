@@ -101,6 +101,18 @@ public class AntidoseNotifications extends FirebaseMessagingService {
         }
     }
 
+    public String getNotificationDistance(Float distance) {
+        String responseText = "";
+        if (distance > 1000.0) {
+            // Do km (e.g 1.2km)
+            responseText = String.format("%.1f km", distance / 1000);
+        } else {
+            // Do m (e.g 100m
+            responseText = String.format("%dm", (int)Math.ceil(distance));
+        }
+        return responseText;
+    }
+
     // Create the associated notification for the help request
     public void createNotification(Location location, int max, String incidentId){
         Float bearing = location.bearingTo(end);
@@ -127,7 +139,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
                         .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Overdose " +
-                                Math.ceil(distance) + "m away!")
+                                getNotificationDistance(distance) + " away!")
                         .setContentText("Click to respond!");
 
         PendingIntent resultPendingIntent =

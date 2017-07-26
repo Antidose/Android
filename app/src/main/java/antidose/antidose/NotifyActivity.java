@@ -1,5 +1,6 @@
 package antidose.antidose;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,6 +52,11 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notify);
+
+        /*// Cancel the notification
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(getIntent().getIntExtra("INCIDENT_ID", 0));*/
 
         updateFonts();
         connectWebSocket();

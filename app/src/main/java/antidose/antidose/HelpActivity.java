@@ -20,6 +20,7 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -78,7 +79,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     private WebSocketClient mWebSocketClient;
     Button smsButton;
     final private int MY_PERMISSIONS_REQUEST_SEND_SMS = 123;
-    String emsTextContents = "There is an overdose occuring at my location, please send help.";
+    String emsTextContents = "There is an opioid overdose occuring at my location, please send help.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,14 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         updateRadius(radius);
         updateResCount(resCount);
         updateOTWCount(OTW, "0");
+
+        if(checkSMSPermissions()) {
+            sendSMS();
+        }
+        else {
+            // Do nothing
+        }
+
         audioManager = (AudioManager) getSystemService(this.AUDIO_SERVICE);
         mp = MediaPlayer.create(this, R.raw.alarm);
         mp.setLooping(true);
@@ -109,8 +118,17 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
             @Override
             public void onClick(View arg0) {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:250-507-7525"));
+                callIntent.setData(Uri.parse("tel:411"));
                 startActivity(callIntent);
+            }
+        });
+
+        Button infoButton = (Button) findViewById(R.id.buttonTips);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                goInfo();
             }
         });
     }
@@ -127,15 +145,27 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         }
     }
 
-    protected void hideSMSButton(){
-        smsButton = (Button) findViewById(R.id.smsEMS);
-        smsButton.setVisibility(View.GONE);
-    }
-
     protected void sendSMS(){
         SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("2505077525", null, emsTextContents, null, null);
+        smsManager.sendTextMessage("4038912963", null, emsTextContents, null, null);
         Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
+    }
+
+    public void goInfo() {
+        Intent intent = new Intent(this, InformationActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                goInfo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -146,7 +176,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted
                     sendSMS();
-                    hideSMSButton();
                 }
                 else {
                     // permission denied, do nothing
@@ -169,6 +198,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         //// TODO: 2017-07-13 get search radius from server
         String radius = "00";
+        radius = getIntent().getStringExtra("RADIUS");
         text.setText(radius);
 
     }
@@ -177,6 +207,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         // TODO: 2017-07-13 get responder count in radius from server
         String count = "00";
+        count = getIntent().getStringExtra("NUM_RESPONDERS");
         text.setText(count);
 
     }
@@ -235,13 +266,6 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         //Cancel
     }
 
-
-    public void overdoseTips(View view) {
-
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivity(intent);
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.information, menu);
@@ -342,7 +366,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 // {incidentID: string(12),
                 // ID: IMEI | Token}
                 JSONObject req = new JSONObject();
-                String incidentID = "abababababab"; // Gotta get this from server as response to alert.
+                String incidentID = getIntent().getStringExtra("INCIDENT_ID");
                 try {
                     req.put("incidentId", incidentID);
                     req.put("userId", IMEI);
@@ -359,11 +383,18 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //System.out.print(message);
-                        //TextView textView = (TextView)findViewById(R.id.messages);
-                        //textView.setText(textView.getText() + "\n" + message);
-                        Button OTW = (Button) findViewById(R.id.buttonComing);
-                        updateOTWCount(OTW, message);
+                        if(message.equals("cancel")) {
+                            //toss it
+
+                        }else if(message.trim().isEmpty()) {
+                        //skip
+                        }else {
+                            //System.out.print(message);
+                            //TextView textView = (TextView)findViewById(R.id.messages);
+                            //textView.setText(textView.getText() + "\n" + message);
+                            Button OTW = (Button) findViewById(R.id.buttonComing);
+                            updateOTWCount(OTW, message);
+                        }
                     }
                 });
             }

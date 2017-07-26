@@ -79,7 +79,6 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/roundedbutton"
             android:elevation="24dp"
-            android:onClick="overdoseTips"
             android:padding="10dp"
             android:tag="false"
             android:text="Overdose Aid Tips"
@@ -170,7 +169,7 @@
                 android:layout_column="1"
                 android:layout_row="1"
                 android:layout_weight="1"
-                android:text="Radius"
+                android:text="KM Radius"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="12sp" />

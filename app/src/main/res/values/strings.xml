@@ -19,7 +19,7 @@
     <string name="cancel_search">Are you sure you want to cancel the search? No more responders will be alerted of your location.</string>
 
     <string name="confirm_help">Are there enough responders on site to handle the situation?</string>
-
+    <string name="cancel_request">The requester has cancelled their call. Thank you for responding.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

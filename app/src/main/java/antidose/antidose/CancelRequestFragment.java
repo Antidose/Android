@@ -20,7 +20,6 @@ public class CancelRequestFragment extends DialogFragment {
     * Each method passes the DialogFragment in case the host needs to query it. */
     public interface CancelRequestListener {
         public void onDialogPositiveClickCancelRequest(DialogFragment dialog);
-        public void onDialogNegativeClickCancelRequest(DialogFragment dialog);
     }
 
     // Use this instance of the interface to deliver action events
@@ -43,18 +42,11 @@ public class CancelRequestFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialog);
-        builder.setMessage(R.string.confirm_help)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.cancel_request)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the positive button event back to the host activity
                         mListener.onDialogPositiveClickCancelRequest(CancelRequestFragment.this);
-                    }
-                })
-                .setNegativeButton("Not Yet", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        // Send the negative button event back to the host activity
-                        mListener.onDialogNegativeClickCancelRequest(CancelRequestFragment.this);
                     }
                 });
         // Create the AlertDialog object and return it

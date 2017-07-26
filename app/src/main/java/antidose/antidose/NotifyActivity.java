@@ -1,5 +1,8 @@
 package antidose.antidose;
 
+import android.app.ActivityManager;
+import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,17 +44,24 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 
 
-public class NotifyActivity extends AppCompatActivity implements LocationListener, CancelRequestFragment.CancelRequestListener {
+public class NotifyActivity extends AppCompatActivity implements LocationListener {
 
     LocationManager mLocationManager;
     public static final String TOKEN_PREFS_NAME = "User_Token";
     private WebSocketClient mWebSocketClient;
     String token;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notify);
+
+        /*// Cancel the notification
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(getIntent().getIntExtra("INCIDENT_ID", 0));*/
 
         updateFonts();
         connectWebSocket();
@@ -122,8 +132,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
     public void cannotGo(View view) {
         makeAPICallRespond(false, false, token);
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+
     }
 
     //on startup to change all fonts
@@ -175,14 +184,14 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
-       /* Intent intent = getIntent();
-        String incid = intent.getStringExtra("INCID");
-        if(incid == null){
+        Intent intent = getIntent();
+        String inc_id = intent.getStringExtra("INCIDENT_ID");
+        if(inc_id == null){
             //error
             return;
         }
-        */
-       String inc_id = "1";
+
+       //String inc_id = "1";
 
         Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, inc_id, hasKit, isGoing));
 
@@ -194,18 +203,22 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                         if (!isGoing) {
                             //person clicked 'no im not going'
                             //return to caller, caller redirects to main
-                            return;
+                            mWebSocketClient.close();
+                            boolean test = mWebSocketClient.isClosed();
+                            Intent intent = new Intent(NotifyActivity.this, MainActivity.class);
+                            startActivity(intent);
+
+                        }else {
+
+                            float IncidentLatitude = response.body().getLatitude();
+                            float IncidentLongitude = response.body().getLongitude();
+
+                            Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
+                            intent.putExtra("incident-latitude", IncidentLatitude);
+                            intent.putExtra("incident-longitude", IncidentLongitude);
+
+                            startActivity(intent);
                         }
-
-                        float IncidentLatitude = response.body().getLatitude();
-                        float IncidentLongitude = response.body().getLongitude();
-
-                        Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
-                        intent.putExtra("incident-latitude", IncidentLatitude);
-                        intent.putExtra("incident-longitude", IncidentLongitude);
-
-                        startActivity(intent);
-
                     }
                 }
 
@@ -298,26 +311,6 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         });
     }
 
-    public void showCancelRequestDialog (){
-        // Create an instance of the dialog fragment and show it
-        DialogFragment dialog = new CancelRequestFragment();
-        dialog.show(getSupportFragmentManager(), "CancelRequestFragment");
-    }
-
-
-    @Override
-    public void onDialogPositiveClickCancelRequest(DialogFragment dialog) {
-        // User touched the dialog's positive button
-        //return to main activity
-        //makeAPICancel(true);
-    }
-
-    @Override
-    public void onDialogNegativeClickCancelRequest(DialogFragment dialog) {
-        // User touched the dialog's negative button
-        //Cancel
-    }
-
 
     public void updateOTWCount(TextView text, String s){
 
@@ -341,15 +334,14 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 Log.i("Websocket", "Opened");
-                TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                String IMEI = mngr.getDeviceId();
+
                 // {incidentID: string(12),
                 // ID: IMEI | Token}
                 JSONObject req = new JSONObject();
-                String incidentID = getIntent().getStringExtra("INCID");
+                String incidentID = getIntent().getStringExtra("INCIDENT_ID");
                 try {
                     req.put("incidentId", incidentID);
-                    req.put("userId", IMEI);
+                    req.put("userId", token);
                 } catch (org.json.JSONException e) {
                     // IDK PASS
                 }
@@ -362,15 +354,20 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(message.equals("cancel")) {
-                            showCancelRequestDialog();
+                        if (mWebSocketClient.isOpen()) {
+                            if (message.equals("cancel")) {
 
-                        }else {
-                            //System.out.print(message);
-                            //TextView textView = (TextView)findViewById(R.id.messages);
-                            //textView.setText(textView.getText() + "\n" + message);
-                            Button numComing = (Button) findViewById(R.id.buttonGoing);
-                            updateOTWCount(numComing, message);
+                                Intent intent = new Intent(NotifyActivity.this, MainActivity.class);
+                                intent.putExtra("CANCEL_FRAGMENT", "TRUE");
+                                startActivity(intent);
+
+
+                            } else if (message.trim().isEmpty()) {
+                                //skip
+                            } else {
+                                Button numComing = (Button) findViewById(R.id.buttonGoing);
+                                updateOTWCount(numComing, message);
+                            }
                         }
                     }
                 });
@@ -379,6 +376,10 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             @Override
             public void onClose(int i, String s, boolean b) {
                 Log.i("Websocket", "Closed " + s);
+//                Intent intent = new Intent(NotifyActivity.this, MainActivity.class);
+//                intent.putExtra("CANCEL_FRAGMENT", "TRUE");
+//                startActivity(intent);
+
             }
 
             @Override
@@ -389,51 +390,5 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         mWebSocketClient.connect();
     }
 
-   /* public void makeAPICallRespond(boolean hasKit, final boolean isGoing){
 
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getResources().getText(R.string.server_url).toString())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        RestInterface.restInterface apiService =
-                retrofit.create(RestInterface.restInterface.class);
-
-        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
-        String token = settings.getString("Token", null);
-
-        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, hasKit, isGoing));
-
-        call.enqueue(new Callback<RestInterface.IncidentLocation>() {
-            @Override
-            public void onResponse(Call<RestInterface.IncidentLocation> call, Response<RestInterface.IncidentLocation> response) {
-                if (response.isSuccessful()) {
-                        Timber.d("Responding to incident successful: ");
-                        if (!isGoing) {
-                            //person clicked 'no im not going'
-                            //return to caller, caller redirects to main
-                            return;
-                        }
-
-                        //float lat = response.body().getLocation();
-
-                        Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
-                       //intent.putExtra("incident-location", incidentLocation);
-                        startActivity(intent);
-
-                    }
-                }
-
-            @Override
-            public void onFailure(Call<RestInterface.IncidentLocation> call, Throwable t) {
-                Log.d("D", "User registration failed :(");
-                Log.d("D", t.toString());
-            }
-        });
-
-    } */
 }

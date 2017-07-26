@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by graeme on 2017-07-04.
  */
 
-public class RestInterface extends AppCompatActivity{
+public class RestInterface {
 
      class User {
 
@@ -162,6 +162,18 @@ public class RestInterface extends AppCompatActivity{
         }
     }
 
+    class UpdateFirebase{
+        String api_token;
+        String firebase_token;
+
+        public UpdateFirebase(String api, String fb){
+            this.api_token = api;
+            this.firebase_token = fb;
+        }
+
+    }
+
+
     class NumberResponders{
 
         @Expose
@@ -281,6 +293,9 @@ public class RestInterface extends AppCompatActivity{
 
         @POST("location")
         Call<ResponseBody> sendLocationUpdate(@Body ResponderLatLong responder);
+
+        @POST("updateFirebaseToken")
+        Call<ResponseBody> UpdateFirebaseToken(@Body UpdateFirebase updater);
 
     }
 }

@@ -288,6 +288,8 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                         if(message.equals("cancel")) {
                             //toss it
 
+                        }else if(message.trim().isEmpty()) {
+                        //skip
                         }else {
                             //System.out.print(message);
                             //TextView textView = (TextView)findViewById(R.id.messages);

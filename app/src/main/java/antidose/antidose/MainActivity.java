@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -40,7 +41,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, CancelRequestFragment.CancelRequestListener {
 
     LocationManager mLocationManager;
     static String IMEI;
@@ -92,8 +93,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         alertImage.setScaleType(ScaleType.FIT_CENTER);
         alertAnimation = (AnimationDrawable) alertImage.getDrawable();
         alertAnimation.start();
+
+        String frag = getIntent().getStringExtra("CANCEL_FRAGMENT");
+        if(frag !=null){
+            showCancelRequestDialog();
+        }
+
     }
 
+    public void showCancelRequestDialog (){
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new CancelRequestFragment();
+        dialog.show(getSupportFragmentManager(), "CancelRequestFragment");
+    }
+
+
+    @Override
+    public void onDialogPositiveClickCancelRequest(DialogFragment dialog) {
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.information, menu);

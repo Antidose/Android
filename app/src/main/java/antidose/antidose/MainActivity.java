@@ -227,10 +227,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", "");
+
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
 
-        Call<RestInterface.startIncidentResponse> call = apiService.sendHelp(new RestInterface().new Alert(IMEI, location.getLatitude(), location.getLongitude()));
+
+        Call<RestInterface.startIncidentResponse> call = apiService.sendHelp(new RestInterface().new Alert(IMEI, token, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<RestInterface.startIncidentResponse>() {
             @Override

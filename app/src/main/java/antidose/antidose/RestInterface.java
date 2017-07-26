@@ -19,7 +19,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by graeme on 2017-07-04.
  */
 
-public class RestInterface extends AppCompatActivity{
+public class RestInterface {
 
      class User {
 

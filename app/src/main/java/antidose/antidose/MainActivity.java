@@ -80,8 +80,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         //get users imei to make the request
 
-        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        IMEI = mngr.getDeviceId();
+
         updateFonts();
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -102,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public void sendAlert(View view) {
+        TelephonyManager mngr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        IMEI = mngr.getDeviceId();
 
         //bring up loading thing, this could take a sec
         Button loadButton = (Button) findViewById(R.id.buttonLoading);
@@ -220,9 +221,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         Timber.d("Alert request successful");
 
                         Intent intent = new Intent(MainActivity.this, HelpActivity.class);
-
+                        int rad = response.body().getRadius();
                         intent.putExtra("INCIDENT_ID", response.body().getIncidentId().toString());
-                        intent.putExtra("RADIUS", Integer.toString(response.body().getRaidus()/1000));
+                        intent.putExtra("RADIUS", Integer.toString(response.body().getRadius()/1000));
                         intent.putExtra("NUM_RESPONDERS", Integer.toString(response.body().getNumNotified()));
 
                         Button loadButton = (Button) findViewById(R.id.buttonLoading);

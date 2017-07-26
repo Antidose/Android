@@ -217,9 +217,9 @@ public class RestInterface extends AppCompatActivity{
             @SerializedName("num_notified")
             @Expose
             private int numNotified;
-            @SerializedName("raidus")
+            @SerializedName("radius")
             @Expose
-            private int raidus;
+            private int radius;
 
             public String getIncidentId() {
                 return incidentId;
@@ -229,8 +229,8 @@ public class RestInterface extends AppCompatActivity{
                 return numNotified;
             }
 
-            public int getRaidus() {
-                return raidus;
+            public int getRadius() {
+                return radius;
             }
 
     }

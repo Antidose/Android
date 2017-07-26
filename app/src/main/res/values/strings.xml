@@ -2,7 +2,7 @@
     <string name="app_name">Antidose</string>
     <string name="registration_activity_label">Registration</string>
     <string name="verification_activity_label">Verification</string>
-    <string name="server_url">http://11dc3df4.ngrok.io//</string>
+    <string name="server_url">http://11dc3df4.ngrok.io/</string>
     <string name="short_server_url">11dc3df4.ngrok.io</string>
     <string name="info_activity_label">App Information</string>
     <string name="aid_activity_label">First Aid Information</string>

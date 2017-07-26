@@ -103,7 +103,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
     public String getNotificationDistance(Float distance) {
         String responseText = "";
-        if (distance > 1000.0) {
+        if (distance >= 1000.0) {
             // Do km (e.g 1.2km)
             responseText = String.format("%.1f km", distance / 1000);
         } else {
@@ -138,7 +138,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
                         .setDeleteIntent(createOnDismissedIntent(this, incidentId))
                         .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("Overdose " +
+                        .setContentTitle("Help! Overdose " +
                                 getNotificationDistance(distance) + " away!")
                         .setContentText("Click to respond!");
 

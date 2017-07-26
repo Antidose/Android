@@ -2,8 +2,8 @@
     <string name="app_name">Antidose</string>
     <string name="registration_activity_label">Registration</string>
     <string name="verification_activity_label">Verification</string>
-    <string name="server_url">http://11dc3df4.ngrok.io/</string>
-    <string name="short_server_url">11dc3df4.ngrok.io</string>
+    <string name="server_url">http://antidose-go.herokuapp.com/</string>
+    <string name="short_server_url">antidose-go.herokuapp.com</string>
     <string name="info_activity_label">App Information</string>
     <string name="aid_activity_label">First Aid Information</string>
     <string name="title_activity_settings">Settings</string>
@@ -19,5 +19,8 @@
     <string name="cancel_search">Are you sure you want to cancel the search? No more responders will be alerted of your location.</string>
 
     <string name="confirm_help">Are there enough responders on site to handle the situation?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

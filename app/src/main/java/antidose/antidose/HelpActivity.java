@@ -268,7 +268,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 // {incidentID: string(12),
                 // ID: IMEI | Token}
                 JSONObject req = new JSONObject();
-                String incidentID = "abababababab"; // Gotta get this from server as response to alert.
+                String incidentID = getIntent().getStringExtra("INCIDENT_ID");
                 try {
                     req.put("incidentId", incidentID);
                     req.put("userId", IMEI);
@@ -285,11 +285,16 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //System.out.print(message);
-                        //TextView textView = (TextView)findViewById(R.id.messages);
-                        //textView.setText(textView.getText() + "\n" + message);
-                        Button OTW = (Button) findViewById(R.id.buttonComing);
-                        updateOTWCount(OTW, message);
+                        if(message.equals("cancel")) {
+                            //toss it
+
+                        }else {
+                            //System.out.print(message);
+                            //TextView textView = (TextView)findViewById(R.id.messages);
+                            //textView.setText(textView.getText() + "\n" + message);
+                            Button OTW = (Button) findViewById(R.id.buttonComing);
+                            updateOTWCount(OTW, message);
+                        }
                     }
                 });
             }

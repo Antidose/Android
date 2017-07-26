@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -40,7 +41,7 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 
 
-public class NotifyActivity extends AppCompatActivity implements LocationListener {
+public class NotifyActivity extends AppCompatActivity implements LocationListener, CancelRequestFragment.CancelRequestListener {
 
     LocationManager mLocationManager;
     public static final String TOKEN_PREFS_NAME = "User_Token";
@@ -297,10 +298,30 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         });
     }
 
+    public void showCancelRequestDialog (){
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new CancelRequestFragment();
+        dialog.show(getSupportFragmentManager(), "CancelRequestFragment");
+    }
+
+
+    @Override
+    public void onDialogPositiveClickCancelRequest(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        //return to main activity
+        //makeAPICancel(true);
+    }
+
+    @Override
+    public void onDialogNegativeClickCancelRequest(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        //Cancel
+    }
+
+
     public void updateOTWCount(TextView text, String s){
 
         // TODO: 2017-07-13 get number of responders on the way from server
-
 
         text.setText(s);
 
@@ -325,7 +346,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 // {incidentID: string(12),
                 // ID: IMEI | Token}
                 JSONObject req = new JSONObject();
-                String incidentID = "abababababab"; // Gotta get this from server as response to alert.
+                String incidentID = getIntent().getStringExtra("INCID");
                 try {
                     req.put("incidentId", incidentID);
                     req.put("userId", IMEI);
@@ -341,11 +362,16 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //System.out.print(message);
-                        //TextView textView = (TextView)findViewById(R.id.messages);
-                        //textView.setText(textView.getText() + "\n" + message);
-                        Button numComing = (Button) findViewById(R.id.buttonGoing);
-                        updateOTWCount(numComing, message);
+                        if(message.equals("cancel")) {
+                            showCancelRequestDialog();
+
+                        }else {
+                            //System.out.print(message);
+                            //TextView textView = (TextView)findViewById(R.id.messages);
+                            //textView.setText(textView.getText() + "\n" + message);
+                            Button numComing = (Button) findViewById(R.id.buttonGoing);
+                            updateOTWCount(numComing, message);
+                        }
                     }
                 });
             }

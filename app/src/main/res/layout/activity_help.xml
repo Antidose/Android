@@ -8,7 +8,6 @@
     tools:context="antidose.antidose.HelpActivity">
 
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="0dp"
@@ -39,7 +38,7 @@
 
     <LinearLayout
         android:layout_width="240dp"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="9dp"
         android:layout_marginLeft="9dp"
@@ -54,6 +53,25 @@
         app:layout_constraintVertical_bias="0.731">
 
         <Button
+            android:id="@+id/buttonDialEMS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="@color/colorPrimary"
+            android:elevation="24dp"
+            android:padding="10dp"
+            android:tag="false"
+            android:text="CALL 911"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="276dp" />
+
+        <Button
             android:id="@+id/buttonTips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,7 +79,6 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/roundedbutton"
             android:elevation="24dp"
-            android:onClick="overdoseTips"
             android:padding="10dp"
             android:tag="false"
             android:text="Overdose Aid Tips"

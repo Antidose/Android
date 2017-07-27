@@ -142,7 +142,6 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         String hasKit = view.getTag().toString();
         if (hasKit.equals("true")) {
             makeAPICallRespond(true, true, token);
-
         } else {
             makeAPICallRespond(false, true, token);
         }

@@ -242,6 +242,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
         dialog.show(getSupportFragmentManager(), "cancelSearchFragment");
     }
 
+    @Override
+    public void onBackPressed() {
+    }
 
     @Override
     public void onDialogPositiveClickCancel(DialogFragment dialog) {

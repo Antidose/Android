@@ -235,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public void makeAPICall(String IMEI, Location location){
+        final String theIMEI = IMEI;
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -253,16 +254,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             @Override
             public void onResponse(Call<RestInterface.startIncidentResponse> call, Response<RestInterface.startIncidentResponse> response) {
                 if (response.isSuccessful()){
-                        Timber.d("Alert request successful");
+                    Timber.d("Alert request successful");
 
-                        Intent intent = new Intent(MainActivity.this, HelpActivity.class);
-                        intent.putExtra("INCIDENT_ID", response.body().getIncidentId().toString());
-                        intent.putExtra("RADIUS", Integer.toString(response.body().getRadius()/1000));
-                        intent.putExtra("NUM_RESPONDERS", Integer.toString(response.body().getNumNotified()));
+                    Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+                    intent.putExtra("INCIDENT_ID", response.body().getIncidentId().toString());
+                    intent.putExtra("RADIUS", Integer.toString(response.body().getRadius()/1000));
+                    intent.putExtra("NUM_RESPONDERS", Integer.toString(response.body().getNumNotified()));
 
-                        Button loadButton = (Button) findViewById(R.id.buttonLoading);
-                        loadButton.setVisibility(View.INVISIBLE);
-                        startActivity(intent);
+                    Button loadButton = (Button) findViewById(R.id.buttonLoading);
+                    loadButton.setVisibility(View.INVISIBLE);
+                    startActivity(intent);
                 }
             }
 

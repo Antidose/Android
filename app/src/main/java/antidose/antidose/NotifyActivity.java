@@ -52,11 +52,20 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     private WebSocketClient mWebSocketClient;
     String token;
 
-
+    @Override
+    protected void onNewIntent(Intent savedIntent)
+    {
+        super.onNewIntent(savedIntent);
+        onActive();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onActive();
+    }
+
+    protected void onActive() {
         setContentView(R.layout.activity_notify);
 
         /*// Cancel the notification
@@ -223,7 +232,7 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                             //return to caller, caller redirects to main
                             mWebSocketClient.close();
                             boolean test = mWebSocketClient.isClosed();
-                            Intent intent = new Intent(NotifyActivity.this, MainActivity.class);
+                            Intent intent = new Intent(NotifyActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             startActivity(intent);
 
                         }else {

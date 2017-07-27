@@ -13,7 +13,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,22 +91,6 @@ public class VerificationActivity extends AppCompatActivity {
         });
     }
 
-    public void goInfo() {
-        Intent intent = new Intent(this, InformationActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_info:
-                goInfo();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,7 +137,7 @@ public class VerificationActivity extends AppCompatActivity {
                     // Commit the edits!
                     editor.commit();
 
-                    Intent intent = new Intent(VerificationActivity.this, MainActivity.class);
+                    Intent intent = new Intent(VerificationActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
                 }else{
                     Timber.d("User verification failed: ");

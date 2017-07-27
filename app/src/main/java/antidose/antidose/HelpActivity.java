@@ -82,14 +82,27 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
     String emsTextContents = "There is an opioid overdose occuring at my location, please send help.";
 
     @Override
+    protected void onNewIntent(Intent savedIntent)
+    {
+        super.onNewIntent(savedIntent);
+        onActive();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onActive();
+
+    }
+
+    public void onActive()
+    {
         setContentView(R.layout.activity_help);
 
         updateFonts();
         connectWebSocket();
 
-    //header
+        //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -328,7 +341,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                     try {
                         Timber.d("Incident Complete successful: " + response.body().string());
 
-                        Intent intent = new Intent(HelpActivity.this, MainActivity.class);
+                        Intent intent = new Intent(HelpActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
                         return;
 

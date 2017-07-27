@@ -36,10 +36,20 @@ public class SettingActivity extends AppCompatActivity implements DeleteConfirmF
     public static final String TOKEN_PREFS_NAME = "User_Token";
     public static final String STATUS_PREFS_NAME = "Status";
 
+    @Override
+    protected void onNewIntent(Intent savedIntent)
+    {
+        super.onNewIntent(savedIntent);
+        onActive();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onActive();
+    }
+
+    protected void onActive() {
         setContentView(R.layout.activity_setting);
 
         //header

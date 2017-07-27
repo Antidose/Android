@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,12 +39,21 @@ public class RegistrationActivity extends AppCompatActivity {
     TextView textViewError;
     String lastChar = " ";
 
-
+    @Override
+    protected void onNewIntent(Intent savedIntent)
+    {
+        super.onNewIntent(savedIntent);
+        onActive();
+    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onActive();
+    }
+
+    protected void onActive() {
         setContentView(R.layout.activity_registration);
 
         updateFonts();
@@ -85,23 +93,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public void goInfo() {
-        Intent intent = new Intent(this, InformationActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_info:
-                goInfo();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override

@@ -18,7 +18,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
@@ -169,22 +168,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
 
     }
 
-    public void goInfo() {
-        Intent intent = new Intent(this, InformationActivity.class);
-        startActivity(intent);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_info:
-                goInfo();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void onMapReady(MapboxMap mapboxMap){

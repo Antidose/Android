@@ -72,8 +72,7 @@
         <activity
             android:name=".NotifyActivity"
             android:label=""
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

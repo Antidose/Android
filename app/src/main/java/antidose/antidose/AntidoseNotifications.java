@@ -1,12 +1,14 @@
 package antidose.antidose;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -138,9 +140,12 @@ public class AntidoseNotifications extends FirebaseMessagingService {
                         .setDeleteIntent(createOnDismissedIntent(this, incidentId))
                         .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                         .setContentTitle("Help! Overdose " +
                                 getNotificationDistance(distance) + " away!")
-                        .setContentText("Click to respond!");
+                        .setContentText("Click to respond!")
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setPriority(Notification.PRIORITY_HIGH);
 
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(

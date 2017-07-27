@@ -31,6 +31,7 @@ import android.widget.TextView;
 import butterknife.OnClick;
 
 import static antidose.antidose.R.id.action_info;
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
@@ -47,7 +48,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, CancelRequestFragment.CancelRequestListener {
+public class MainActivity extends AppCompatActivity implements CancelRequestFragment.CancelRequestListener {
 
     LocationManager mLocationManager;
     static String IMEI;
@@ -113,12 +114,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         alertAnimation.start();
 
         String frag = getIntent().getStringExtra("CANCEL_FRAGMENT");
-        if(frag !=null){
+        if (frag != null) {
             showCancelRequestDialog();
         }
     }
 
-    public void showCancelRequestDialog (){
+    public void showCancelRequestDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new CancelRequestFragment();
         dialog.show(getSupportFragmentManager(), "CancelRequestFragment");
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onDialogPositiveClickCancelRequest(DialogFragment dialog) {
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.information, menu);
@@ -157,44 +159,75 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
 
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_PHONE_STATE}, 1);
             return;
         }
 
-        if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNETWORK = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
+        if (locationGPS != null && locationGPS.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
             // Last location in phone was 2 minutes ago
             // Do something with the recent location fix
             //  otherwise wait for the update below
-            makeAPICall(IMEI, location);
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            makeAPICall(IMEI, locationGPS);
+        } else if (locationNETWORK != null && locationNETWORK.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000){
+            // Last location in phone was 2 minutes ago
+            // Do something with the recent location fix
+            //  otherwise wait for the update below
+            makeAPICall(IMEI, locationNETWORK);
+        }
+
+        else {
+
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
 
         }
     }
 
-    public void onLocationChanged(Location location) {
-        if (location != null) {
-            Log.v("Location Changed", location.getLatitude() + " and " + location.getLongitude());
+
+    LocationListener locationListenerGps = new LocationListener() {
+        public void onLocationChanged(Location location) {
             mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(locationListenerGps);
             makeAPICall(IMEI, location);
         }
-    }
 
-    // Required functions for implementing location services
-    public void onProviderDisabled(String arg0) {}
-    public void onProviderEnabled(String arg0) {}
-    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
+    LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(locationListenerNetwork);
+            makeAPICall(IMEI, location);
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
 
     public void updateFonts(){
 
@@ -245,10 +278,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
+        String token = settings.getString("Token", "");
+
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
 
-        Call<RestInterface.startIncidentResponse> call = apiService.sendHelp(new RestInterface().new Alert(IMEI, location.getLatitude(), location.getLongitude()));
+
+        Call<RestInterface.startIncidentResponse> call = apiService.sendHelp(new RestInterface().new Alert(IMEI, token, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<RestInterface.startIncidentResponse>() {
             @Override

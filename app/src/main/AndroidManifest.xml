@@ -37,7 +37,8 @@
         <activity
             android:name=".NavigationActivity"
             android:label="Navigation"
-            android:screenOrientation="portrait"/>
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RegistrationActivity"
             android:label="@string/registration_activity_label"

@@ -315,6 +315,9 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         Button b3 = (Button)findViewById(R.id.buttonCancel);
         b3.setTypeface(custom_font);
+
+        Button b4 = (Button)findViewById(R.id.buttonDialEMS);
+        b4.setTypeface(custom_font);
     }
 
     public void makeAPICancel(boolean isResolved){

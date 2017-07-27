@@ -142,7 +142,10 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.information, menu);
         return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public void onBackPressed() {
     }
 
 

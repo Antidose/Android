@@ -178,10 +178,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         //locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 
-
-
     }
-
 
     public void startNavigation() {
         mapboxMap.setMyLocationEnabled(false);

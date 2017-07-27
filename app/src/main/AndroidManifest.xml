@@ -26,7 +26,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,6 +43,7 @@
             android:name=".RegistrationActivity"
             android:label="@string/registration_activity_label"
             android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,6 +52,7 @@
         <activity
             android:name=".VerificationActivity"
             android:label="@string/verification_activity_label"
+            android:launchMode="singleTop"
             android:parentActivityName=".RegistrationActivity"
             android:screenOrientation="portrait">
             <meta-data
@@ -60,7 +63,8 @@
             android:name=".SettingActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -68,23 +72,23 @@
         <activity
             android:name=".NotifyActivity"
             android:label=""
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
             >
         </activity>
         <activity
-            android:name=".ContactEMSActivity"
-            android:screenOrientation="portrait">
-            >
-        </activity>
-        <activity
             android:name=".HelpActivity"
             android:label="Finding Help"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
 
-        <activity android:name=".InformationActivity" />
+        <activity android:name=".InformationActivity"
+            android:screenOrientation="portrait"
+            android:label="Care Instructions"
+            android:launchMode="singleTop"/>
 
         <service android:name=".FirebaseMessagingIDService">
             <intent-filter>

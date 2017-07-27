@@ -1,12 +1,14 @@
 package antidose.antidose;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,7 +23,7 @@ public class InformationActivity extends AppCompatActivity implements TextToSpee
     private Button btnNext;
     private Button btnPrev;
     private String[] steps = {"First Stimulate.  Rub your knuckles hard on the victims sternum.  Try to wake them. Call nine one one if they are unresponsive.",
-            "Ensure that the airway of the victim is clear and unobstructed.",
+            "Check that the airway of the victim is clear and unobstructed.",
             "If the airway is clear, plug their nose, tilt their head back, and breathe for the victim.  Compressions are not necessary, simply provide air.  One breath every 5 seconds.",
             "Take a moment and evaluate the situation, is the person coming around?  Are they breathing alone?  They may need Naloxone.",
             "If naloxone is required, inject 1 milli liter into a large muscle like the leg or butt.  And continue to breathe for them.",
@@ -29,8 +31,20 @@ public class InformationActivity extends AppCompatActivity implements TextToSpee
     private int currentStep = 0;
 
     @Override
+    protected void onNewIntent(Intent savedIntent)
+    {
+        super.onNewIntent(savedIntent);
+        onActive();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onActive();
+    }
+
+    protected void onActive()
+    {
         setContentView(R.layout.activity_information);
 
         tts = new TextToSpeech(this, this);
@@ -111,14 +125,13 @@ public class InformationActivity extends AppCompatActivity implements TextToSpee
                 }
             }
         });
-
     }
 
     private void startSpeech(int firstStep){
         speak("", TextToSpeech.QUEUE_FLUSH, null);
         for (int theStep = firstStep; theStep < steps.length; theStep++) {
             speak(steps[theStep], TextToSpeech.QUEUE_ADD, Integer.toString(theStep));
-            speakSilent(2000,Integer.toString(theStep) + "silence");
+            speakSilent(10000,Integer.toString(theStep) + "silence");
         }
     }
 
@@ -160,6 +173,12 @@ public class InformationActivity extends AppCompatActivity implements TextToSpee
         } else {
             Log.e("TTS", "Initilization Failed!");
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.information, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

@@ -58,8 +58,20 @@ public class MainActivity extends AppCompatActivity implements CancelRequestFrag
     AnimationDrawable alertAnimation;
 
     @Override
+    protected void onNewIntent(Intent savedIntent)
+    {
+        super.onNewIntent(savedIntent);
+        onActive();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onActive();
+    }
+
+    protected void onActive()
+    {
         setContentView(R.layout.activity_main);
 
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
@@ -105,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements CancelRequestFrag
         if (frag != null) {
             showCancelRequestDialog();
         }
-
     }
 
     public void showCancelRequestDialog() {
@@ -246,20 +257,8 @@ public class MainActivity extends AppCompatActivity implements CancelRequestFrag
         startActivity(intent);
     }
 
-    public void goHelp(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, HelpActivity.class);
-        startActivity(intent);
-
-    }
-
     public void goSettings(View view) {
         Intent intent = new Intent(this, SettingActivity.class);
-        startActivity(intent);
-    }
-
-    public void callEMS(View view) {
-        Intent intent = new Intent(this, ContactEMSActivity.class);
         startActivity(intent);
     }
 
@@ -269,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements CancelRequestFrag
     }
 
     public void makeAPICall(String IMEI, Location location){
+        final String theIMEI = IMEI;
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -291,17 +291,16 @@ public class MainActivity extends AppCompatActivity implements CancelRequestFrag
             @Override
             public void onResponse(Call<RestInterface.startIncidentResponse> call, Response<RestInterface.startIncidentResponse> response) {
                 if (response.isSuccessful()){
-                        Timber.d("Alert request successful");
+                    Timber.d("Alert request successful");
 
-                        Intent intent = new Intent(MainActivity.this, HelpActivity.class);
-                        int rad = response.body().getRadius();
-                        intent.putExtra("INCIDENT_ID", response.body().getIncidentId().toString());
-                        intent.putExtra("RADIUS", Integer.toString(response.body().getRadius()/1000));
-                        intent.putExtra("NUM_RESPONDERS", Integer.toString(response.body().getNumNotified()));
+                    Intent intent = new Intent(MainActivity.this, HelpActivity.class);
+                    intent.putExtra("INCIDENT_ID", response.body().getIncidentId().toString());
+                    intent.putExtra("RADIUS", Integer.toString(response.body().getRadius()/1000));
+                    intent.putExtra("NUM_RESPONDERS", Integer.toString(response.body().getNumNotified()));
 
-                        Button loadButton = (Button) findViewById(R.id.buttonLoading);
-                        loadButton.setVisibility(View.INVISIBLE);
-                        startActivity(intent);
+                    Button loadButton = (Button) findViewById(R.id.buttonLoading);
+                    loadButton.setVisibility(View.INVISIBLE);
+                    startActivity(intent);
                 }
             }
 

@@ -82,12 +82,14 @@ public class RestInterface {
     class Alert {
 
         String IMEI;
+        String api_token;
         double latitude;
         double longitude;
 
 
-        public Alert(String IMEI, double latitude, double longitude) {
+        public Alert(String IMEI, String api_token, double latitude, double longitude) {
             this.IMEI = IMEI;
+            this.api_token = api_token;
             this.latitude = latitude;
             this.longitude = longitude;
         }

@@ -230,11 +230,19 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                             float IncidentLatitude = response.body().getLatitude();
                             float IncidentLongitude = response.body().getLongitude();
 
-                            Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
-                            intent.putExtra("incident-latitude", IncidentLatitude);
-                            intent.putExtra("incident-longitude", IncidentLongitude);
+                            if(Math.signum(IncidentLatitude)==0 && Math.signum(IncidentLongitude)==0){
+                                //then it has been cancelled
+                                Intent intent = new Intent(NotifyActivity.this, MainActivity.class);
+                                intent.putExtra("CANCEL_FRAGMENT", "TRUE");
+                                startActivity(intent);
 
-                            startActivity(intent);
+                            }else {
+                                Intent intent = new Intent(NotifyActivity.this, NavigationActivity.class);
+                                intent.putExtra("incident-latitude", IncidentLatitude);
+                                intent.putExtra("incident-longitude", IncidentLongitude);
+
+                                startActivity(intent);
+                            }
                         }
                     }
                 }
@@ -293,14 +301,13 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
         RestInterface.restInterface apiService =
                 retrofit.create(RestInterface.restInterface.class);
-        /*Intent intent = getIntent();
-        String inc_id = intent.getStringExtra("INCID");
+        Intent intent = getIntent();
+        String inc_id = intent.getStringExtra("INCIDENT_ID");
         if(inc_id == null){
             //error
             return;
         }
-*/
-        String inc_id = "1"; //FOR TESTING ONLY
+
         Call<RestInterface.MapInformation> call = apiService.requestInfo(new RestInterface().new ResponderIncLatLong(token, inc_id, location.getLatitude(), location.getLongitude()));
 
         call.enqueue(new Callback<RestInterface.MapInformation>() {

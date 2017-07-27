@@ -1,15 +1,18 @@
 package antidose.antidose;
 
+import android.*;
 import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,7 +48,7 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 
 
-public class NotifyActivity extends AppCompatActivity implements LocationListener {
+public class NotifyActivity extends AppCompatActivity {
 
     LocationManager mLocationManager;
     public static final String TOKEN_PREFS_NAME = "User_Token";
@@ -79,26 +82,88 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         //header
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+
         Button numComing = (Button) findViewById(R.id.buttonGoing);
 
         SharedPreferences settings = getSharedPreferences(TOKEN_PREFS_NAME, 0);
         token = settings.getString("Token", null);
 
 
-        //grab location for distance calculations on the backend
-        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
 
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.READ_PHONE_STATE}, 1);
+            return;
+        }
+
+        mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNETWORK = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
+        if (locationGPS != null && locationGPS.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
             // Last location in phone was 2 minutes ago
             // Do something with the recent location fix
             //  otherwise wait for the update below
-            getInfoHandler(token, location);
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            getInfoHandler(token, locationGPS);
+        } else if (locationNETWORK != null && locationNETWORK.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000){
+            // Last location in phone was 2 minutes ago
+            // Do something with the recent location fix
+            //  otherwise wait for the update below
+            getInfoHandler(token, locationNETWORK);
+        }
+
+        else {
+
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
 
         }
     }
+
+
+    LocationListener locationListenerGps = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(locationListenerGps);
+            getInfoHandler(token, location);
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
+    LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(locationListenerNetwork);
+            getInfoHandler(token, location);
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
 
     public void goInfo() {
         Intent intent = new Intent(this, InformationActivity.class);
@@ -116,19 +181,6 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    public void onLocationChanged(Location location) {
-        if (location != null) {
-            Log.v("Location Changed", location.getLatitude() + " and " + location.getLongitude());
-            mLocationManager.removeUpdates(this);
-            getInfoHandler(token, location);
-        }
-    }
-
-    // Required functions for implementing location services
-    public void onProviderDisabled(String arg0) {}
-    public void onProviderEnabled(String arg0) {}
-    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
 
 
     public void getInfoHandler(String token, Location location){
@@ -334,6 +386,11 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
 
                     String minutes = Integer.toString((int)(response.body().getTime())/60);
                     String seconds = Integer.toString((int)(response.body().getDist())%60);
+
+                    if(minutes.length() ==1 )
+                        minutes = "0" + minutes;
+                    if(seconds.length() == 1)
+                        seconds = "0" + seconds;
                     duration.setText(minutes+":"+seconds);
 
                 }

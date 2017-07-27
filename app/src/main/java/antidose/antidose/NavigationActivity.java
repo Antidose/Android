@@ -32,6 +32,7 @@ import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.MyBearingTracking;
 import com.mapbox.mapboxsdk.constants.MyLocationTracking;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.location.LocationSource;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
@@ -70,6 +71,7 @@ import com.mapbox.services.commons.geojson.LineString;
 import com.mapbox.services.commons.models.Position;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -146,8 +148,8 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         //checkPermission()
 
         Intent intent = getIntent();
-        destLat = (float) intent.getDoubleExtra("incident-latitude", 0.0);
-        destLng = (float) intent.getDoubleExtra("incident-longitude", 0.0);
+        destLat = intent.getFloatExtra("incident-latitude", 0);
+        destLng = intent.getFloatExtra("incident-longitude", 0);
         layerIds = new ArrayList<>();
         super.onCreate(savedInstanceState);
 
@@ -194,7 +196,8 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
 
         //mapboxMap.setLocationSource(locationEngine);
         //newOrigin();
-        LatLng latLng = new LatLng();
+        LatLng latLng = new LatLng(destLat,destLng);
+
 
         mapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
         mapboxMap.setMyLocationEnabled(true);
@@ -246,7 +249,7 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
     private void newOrigin() {
         if (mapboxMap != null) {
             Location lastLocation = mapboxMap.getMyLocation();
-            LatLng latLng = new LatLng();
+            LatLng latLng = new LatLng(destLat, destLng);
             mapboxMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
             mapboxMap.setMyLocationEnabled(true);
             mapboxMap.getTrackingSettings().setMyLocationTrackingMode(MyLocationTracking.TRACKING_FOLLOW);
@@ -258,7 +261,16 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
         Position origin = Position.fromCoordinates(userLocation.getLongitude(), userLocation.getLatitude());
         Position destination = Position.fromCoordinates(destLng, destLat);
 
+
+
         LatLng point = new LatLng(destination.getLatitude(), destination.getLongitude());
+
+        LatLng latLngMe = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        LatLngBounds latLngBounds = builder.include(point).include(latLngMe).build();
+        mapboxMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 1));
+
+
         Marker marker = mapboxMap.addMarker(new MarkerOptions().position(point));
         pathMarkers.add(marker);
 

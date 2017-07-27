@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -55,7 +57,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
     Location end = new Location("");
     int max = 0;
-    String notification,incidentId = "";
+    String notification, incidentId = "";
 
 
     // When the Android user receives a notification from the server through Firebase, handle it
@@ -74,18 +76,18 @@ public class AntidoseNotifications extends FirebaseMessagingService {
         // Determine if it is a dismissal message
         try {
             notification = jsonObject.getString("notification");
-        }catch(JSONException e){
+        } catch (JSONException e) {
             return;
         }
 
         // This is a help notification
         if (notification.equals("help")) {
-            try{
+            try {
                 lat = Float.parseFloat(jsonObject.getString("lat"));
                 lon = Float.parseFloat(jsonObject.getString("lon"));
                 max = jsonObject.getInt("max");
                 incidentId = jsonObject.getString("incident_id");
-            }catch(JSONException e){
+            } catch (JSONException e) {
                 return;
             }
 
@@ -103,6 +105,16 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
 
             mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             Location locationNETWORK = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
@@ -122,10 +134,14 @@ public class AntidoseNotifications extends FirebaseMessagingService {
             }
 
             else {
-
-                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
-
+                try{
+                    mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
+                }
+                catch(Exception e)
+                {
+                    createNotification(locationGPS, max, incidentId);
+                }
             }
 
             // This is a notification dismissal

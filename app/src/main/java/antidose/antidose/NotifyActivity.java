@@ -142,7 +142,10 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.information, menu);
         return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public void onBackPressed() {
     }
 
 
@@ -421,6 +424,13 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
             }
         };
         mWebSocketClient.connect();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        makeAPICallRespond(false, true, token);
+        super.onDestroy();
     }
 
 

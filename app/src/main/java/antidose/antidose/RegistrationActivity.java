@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -175,5 +176,22 @@ public class RegistrationActivity extends AppCompatActivity {
         Intent intent = new Intent(this, VerificationActivity.class);
         intent.putExtra(EXTRA_MESSAGE, phoneNumber);
         startActivity(intent);
+    }
+
+    public void goInfo() {
+        Intent intent = new Intent(this, InformationActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                goInfo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

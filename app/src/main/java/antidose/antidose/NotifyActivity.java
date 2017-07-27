@@ -425,13 +425,4 @@ public class NotifyActivity extends AppCompatActivity implements LocationListene
         };
         mWebSocketClient.connect();
     }
-
-    @Override
-    protected void onDestroy()
-    {
-        makeAPICallRespond(false, true, token);
-        super.onDestroy();
-    }
-
-
 }

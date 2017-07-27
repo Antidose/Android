@@ -36,6 +36,7 @@
         <activity
             android:name=".NavigationActivity"
             android:label="Navigation"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".RegistrationActivity"

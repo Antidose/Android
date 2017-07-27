@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -180,10 +181,10 @@ public class NavigationActivity extends AppCompatActivity implements OnMapReadyC
 
     public void startNavigation(){
         mapboxMap.setMyLocationEnabled(false);
-
         locationLayerPlugin = new LocationLayerPlugin(mapView, mapboxMap, locationEngine);
         locationLayerPlugin.setLocationLayerEnabled(LocationLayerMode.NAVIGATION);
     }
+
     @Override
     public void onMapReady(MapboxMap mapboxMap){
         this.mapboxMap = mapboxMap;

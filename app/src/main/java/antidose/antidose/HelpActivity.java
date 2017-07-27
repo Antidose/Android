@@ -93,6 +93,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         //// TODO: 2017-07-13 get search radius from server
         String radius = "00";
+        radius = getIntent().getStringExtra("RADIUS");
         text.setText(radius);
 
     }
@@ -101,6 +102,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
 
         // TODO: 2017-07-13 get responder count in radius from server
         String count = "00";
+        count = getIntent().getStringExtra("NUM_RESPONDERS");
         text.setText(count);
 
     }
@@ -266,7 +268,7 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 // {incidentID: string(12),
                 // ID: IMEI | Token}
                 JSONObject req = new JSONObject();
-                String incidentID = "abababababab"; // Gotta get this from server as response to alert.
+                String incidentID = getIntent().getStringExtra("INCIDENT_ID");
                 try {
                     req.put("incidentId", incidentID);
                     req.put("userId", IMEI);
@@ -283,11 +285,18 @@ public class HelpActivity extends AppCompatActivity implements cancelSearchFragm
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //System.out.print(message);
-                        //TextView textView = (TextView)findViewById(R.id.messages);
-                        //textView.setText(textView.getText() + "\n" + message);
-                        Button OTW = (Button) findViewById(R.id.buttonComing);
-                        updateOTWCount(OTW, message);
+                        if(message.equals("cancel")) {
+                            //toss it
+
+                        }else if(message.trim().isEmpty()) {
+                        //skip
+                        }else {
+                            //System.out.print(message);
+                            //TextView textView = (TextView)findViewById(R.id.messages);
+                            //textView.setText(textView.getText() + "\n" + message);
+                            Button OTW = (Button) findViewById(R.id.buttonComing);
+                            updateOTWCount(OTW, message);
+                        }
                     }
                 });
             }

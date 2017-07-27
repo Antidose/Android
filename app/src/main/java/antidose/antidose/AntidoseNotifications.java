@@ -112,13 +112,13 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
         Intent resultIntent = new Intent(this, NotifyActivity.class);
         resultIntent.putExtra("BEARING", bearing);
+
         resultIntent.putExtra("INCIDENT_ID", incidentId);
 
-        // Sets an ID for the notification
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setDeleteIntent(createOnDismissedIntent(this))
+                        .setDeleteIntent(createOnDismissedIntent(this, incidentId))
                         .setAutoCancel(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("Someone is experiencing an overdose " +
@@ -148,9 +148,9 @@ public class AntidoseNotifications extends FirebaseMessagingService {
     }
 
     // Pending intent, used for swipe
-    private PendingIntent createOnDismissedIntent(Context context) {
+    private PendingIntent createOnDismissedIntent(Context context, String incidentId) {
         Intent intent = new Intent(context, NotificationDismissedReceiver.class);
-
+        intent.putExtra("INCIDENT_ID", incidentId);
         PendingIntent pendingIntent =
                 PendingIntent.getBroadcast(context.getApplicationContext(),
                         0, intent, 0);
@@ -235,7 +235,7 @@ public class AntidoseNotifications extends FirebaseMessagingService {
             stopSelf();
             return;
         }
-        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, false, false));
+        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, incidentId, false, false));
 
         call.enqueue(new Callback<RestInterface.IncidentLocation>() {
             @Override

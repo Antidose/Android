@@ -23,10 +23,12 @@ public class NotificationDismissedReceiver extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        makeAPICallRespond(context);
+        String incidentId = intent.getStringExtra("INCIDENT_ID");
+        makeAPICallRespond(context, incidentId);
     }
 
-    public void makeAPICallRespond(Context context){
+    public void makeAPICallRespond(Context context, String incidentId){
+
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -48,7 +50,7 @@ public class NotificationDismissedReceiver extends BroadcastReceiver{
             return;
         }
 
-        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token, false, false));
+        Call<RestInterface.IncidentLocation> call = apiService.respondIncident(new RestInterface().new Responder(token,incidentId,  false, false));
 
         call.enqueue(new Callback<RestInterface.IncidentLocation>() {
             @Override

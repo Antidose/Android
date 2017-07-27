@@ -10,8 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.lang.Math.*;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -48,6 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class AntidoseNotifications extends FirebaseMessagingService {
+    LocationManager mLocationManager;
 
     Location end = new Location("");
     int max = 0;
@@ -90,10 +94,37 @@ public class AntidoseNotifications extends FirebaseMessagingService {
 
             LocationManager mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            try {
+/*            try {
                 Location location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 createNotification(location, max, incidentId);
             } catch (SecurityException e) {
+
+            }*/
+
+
+            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location locationNETWORK = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+
+            if (locationGPS != null && locationGPS.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000) {
+                // Last location in phone was 2 minutes ago
+                // Do something with the recent location fix
+                //  otherwise wait for the update below
+                createNotification(locationGPS, max, incidentId);
+
+            } else if (locationNETWORK != null && locationNETWORK.getTime() > Calendar.getInstance().getTimeInMillis() - 2 * 60 * 1000){
+                // Last location in phone was 2 minutes ago
+                // Do something with the recent location fix
+                //  otherwise wait for the update below
+                createNotification(locationNETWORK, max, incidentId);
+
+            }
+
+            else {
+
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListenerGps);
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListenerNetwork);
 
             }
 
@@ -102,6 +133,42 @@ public class AntidoseNotifications extends FirebaseMessagingService {
             cancelNotification();
         }
     }
+
+    LocationListener locationListenerGps = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(locationListenerGps);
+            createNotification(location, max, incidentId);
+
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
+
+    LocationListener locationListenerNetwork = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(locationListenerNetwork);
+            createNotification(location, max, incidentId);
+
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+    };
 
     public String getNotificationDistance(Float distance) {
         String responseText = "";
